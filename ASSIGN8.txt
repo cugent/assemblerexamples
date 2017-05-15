@@ -1,0 +1,353 @@
+//KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H                                00010000
+//STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'                                  00020002
+//STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        00030000
+//SYSIN DD *                                                            00040000
+*************************************************                       00050000
+*PROGRAMMER: CALEB UGENT                                                00060000
+*DATE 10/29/2016                                                        00070099
+*GOAL: BUILD TWO TABLES SORT THEM AND MERGE THEM                        00080099
+*************************************************                       00120000
+MAIN     CSECT                                                          00130014
+         STM   R14,R12,12(R13)    STORE REGISTERS                       00131099
+         LR    R12,R15            LOAD R12 WITH R15                     00132099
+         USING MAIN,R12                                                 00133099
+         LA    R14,MSAVE          POINT R14 AT MSAVE                    00134099
+         ST    R14,8(R13)         STORE FORWARD POINTER                 00135099
+         ST    R13,4(R14)         STORE BACKWARD POINTER                00136099
+         LR    R13,R14            LOAD R13 WITH R14                     00137099
+         SR    R11,R11            ZERO OUT R11                          00140199
+         LA    R11,2(R11)         ADD 2 TO R11                          00140299
+         XDECO R11,NUMNAMES       PUSH R11 TO NUMNAMES                  00140399
+*                                                                       00140499
+         LA    R1,PLIST1          POINT R1 AT PLIST1                    00140599
+         L     R15,=V(BUILD)      R15 AT BUILD                          00140699
+         BALR  R14,R15            CALL BUILD                            00150099
+         XDUMP TABLE1,600                                               00151099
+*                                                                       00151199
+         LA    R1,PLIST3          POINT R1 AT PLIST3                    00151299
+         L     R15,=V(SORT)       R15 AT  SORT                          00151399
+         BALR  R14,R15            CALL SORT                             00154099
+*                                                                       00154199
+         LA    R1,PLIST7          POINT R1 AT PLIST7                    00154299
+         L     R15,=V(PRINT)      R15 AT PRINT                          00154399
+         XPRNT HEADING,42         PRINT HEADING                         00156199
+         BALR  R14,R15            CALL PRINT                            00157099
+*                                                                       00157199
+         LA    R11,1(R11)         ADD 1 TO R11                          00158099
+         XDECO R11,NUMNAMES       PUSH R11 TO NUMNAMES                  00159099
+*                                                                       00160099
+         LA    R1,PLIST2          POINT R1 AT PLIST2                    00170099
+         L     R15,=V(BUILD)      LOAD R15 WITH BUILD                   00171099
+         BALR  R14,R15            CALL BUILD                            00180099
+         XDUMP TABLE2,600                                               00190099
+*                                                                       00191099
+         LA    R1,PLIST4          POINT R1 AT PLIST4                    00192099
+         L     R15,=V(SORT)       LOAD R15 WITH SORT                    00192199
+         BALR  R14,R15            CALL SORT                             00193099
+*                                                                       00193199
+         LA    R1,PLIST8          POINT R1 AT PLIST8                    00193299
+         L     R15,=V(PRINT)      LOARD R15 WITH PRINT                  00193399
+         XPRNT HEADING,42         PRINT HEADING                         00195199
+         BALR  R14,R15            CALL PRINT                            00196099
+*                                                                       00197099
+         LA    R1,PLIST5          POINT R1 AT PLIST5                    00198099
+         L     R15,=V(MERGE)      LOAD R15 WITH MERGE                   00199099
+         BALR  R14,R15            CALL MERGE                            00199499
+*                                                                       00199599
+         LA    R1,PLIST6          LOAD R1 WITH PLIST6                   00199699
+         L     R15,=V(PRINT)      LOAD R15 WITH PRINT                   00199799
+         XPRNT HEADING,42         PRINT HEADING                         00199899
+         BALR  R14,R15            CALL PRINT                            00199999
+*                                                                       00200099
+         L     R13,4(R13)         PREVIOUS SAVE AREA                    00200199
+         LM    R14,R12,12(R13)    LOAD REGISTERS                        00200299
+         BR    R14                EXIT                                  00200399
+***************************************************************         00200499
+*               MAIN STORAGE                                  *         00200599
+***************************************************************         00200699
+         LTORG                                                          00201099
+         ORG MAIN+((*-MAIN+31)/32*32)                                   00202099
+PLIST1   DC A(CARD,TABLE1,EOT1)                                         00202199
+PLIST2   DC A(CARD,TABLE2,EOT2)                                         00202299
+PLIST3   DC A(TABLE1,EOT1)                                              00202399
+PLIST4   DC A(TABLE2,EOT2)                                              00202499
+PLIST5   DC A(TABLE2,TABLE3,EOT1,EOT2,EOT3,TABLE1)                      00202599
+PLIST6   DC A(TABLE3,EOT3,LINENUM)                                      00202699
+PLIST7   DC A(TABLE1,EOT1,LINENUM)                                      00202799
+PLIST8   DC A(TABLE2,EOT2,LINENUM)                                      00202899
+TABLE1   DC 20CL32'ENTRY T1'                                            00203099
+TABLE2   DC 20CL32'ENTRY T2'                                            00204099
+TABLE3   DC 40CL32'ENTRY T3'                                            00205099
+EOT1     DC F'10'                                                       00206099
+EOT2     DC F'20'                                                       00207099
+EOT3     DC F'30'                                                       00208099
+LINENUM  DC F'3'                                                        00208199
+CARD     DC 20CL4'CARD'                                                 00209099
+HEADING  DC CL1' '                                                      00209199
+         DC CL29'PRINTING TABLE NAMES PER LINE'                         00209299
+NUMNAMES DC CL12'TEST'                                                  00209399
+MSAVE    DC 18F'-1'                                                     00209499
+*************************************************                       00210027
+*BUILD INTERNAL SUBROUTINE                                              00220027
+*************************************************                       00230000
+BUILD    CSECT                                                          00240099
+         STM   R14,R12,12(R13)   STORE CALLER REGISTERS                 00250099
+         LR    R12,R15           SET BASE REGISTER TO 12                00260099
+         USING BUILD,R12                                                00270099
+         LA    R14,BSAVE         POINT R14 AT BSAVE AREA                00271099
+         ST    R14,8(R13)        SET FORWARDS POINTER                   00272099
+         ST    R13,4(R14)        SET BACKWARDS POINTER                  00273099
+         LR    R13,R14           LOAD REGISTER 13 WITH 14               00274099
+         LM    R4,R6,0(R1)       CARD R4 TABLE R5 EOT 6                 00275099
+BTOP     XREAD 0(R4),80          READ IN DATA                           00280099
+         CLI   0(R4),C'@'        COMPARE SYMBOL                         00280199
+         BE    BDONE             IF EQUAL BRANCH                        00281099
+         MVC   0(32,R5),0(R4)    MOVE 32 CHAR TO FROM CARD              00282099
+         LA    R5,32(R5)         ADVANCE TABLE POINTER 32               00283099
+         B     BTOP              BRANCH BACK TOP                        00284099
+BDONE    DS    0H                                                       00430099
+         ST    R5,0(R6)          ST R5 IN EOT                           00440099
+         L     R13,4(R13)        LOAD PREVIOUS REGISTERS ADDRESS        00441099
+         LM    R14,R12,12(R13)   RESTORE REGISTERS                      00442099
+         BR    R14               BRANCH TO MAIN                         00450099
+         LTORG                                                          00460099
+BSAVE    DC    18F'-1'                                                  00470099
+*************************************************                       00601050
+*                    PRINT                                              00602069
+*************************************************                       00603050
+PRINT    CSECT                                                          00604099
+         STM   R14,R12,12(R13)   STORE REGISTERS                        00605099
+         LR    R12,R15           LOAD REGISTER R12 WITH R15             00605199
+         USING PRINT,R12                                                00605299
+         LA    R14,PSAVE         POINTER R14 AT PSAVE                   00605399
+         ST    R14,8(R13)        SET FORWARD POINTER                    00605499
+         ST    R13,4(R14)        SET BACKWARD POINTER                   00605599
+         LR    R13,R14           LOAD R13 WITH R14                      00605699
+         LM    R5,R7,0(R1)       R5 TABLE R6 EOT R7 NUMLINES            00605799
+         LA    R10,PLINE+1        LOAD PLINE ADDRESS                    00605899
+         SR    R4,R4              ZERO OUT R4                           00605999
+*                                                                       00606099
+EPTOP    DS    0H                                                       00609050
+         CR    R5,R6               COMPARE R5 TO EOT                    00609199
+         BC    B'1010',PRINTE     BRANCH TO PRINTE                      00609299
+         C     R4,=F'3'           COMPARE R4 TO R11                     00609399
+         BE    PRINTE             BRANCH ON EQUAL TO PRINT              00609499
+         MVC   0(32,R10),0(R5)    MOVE 32 CHARACTERS FROM TABLE         00609599
+         LA    R10,32(R10)        ADVANCE PLINE POINTER                 00610599
+         LA    R5,32(R5)          ADVANCE TABLE POINTER                 00610699
+         LA    R4,1(R4)           ADD ONE TO COUNTER                    00610799
+         B     EPTOP              BRANCH TOP                            00610899
+*                                                                       00610999
+PRINTE   DS    0H                                                       00611051
+         XPRNT PLINE,132          PRINT OUT PLINE                       00611199
+         MVI   PLINE+1,C' '       CLEAR OUT PLINE                       00611299
+         MVC   PLINE+1(131),PLINE PUSH CLEAR TO PLINE                   00611399
+         LA    R10,PLINE+1        RESET PLINE POINTER                   00611499
+         CR    R5,R6              CHECK FOR EOT                         00611599
+         BC    B'1010',EXIT       EXIT IF IT IS                         00611699
+         SR    R4,R4              ZERO OUT R4                           00611799
+         B     EPTOP              BRANCH TOP                            00611899
+*                                                                       00611999
+EXIT     DS    0H                                                       00612050
+         L     R13,4(R13)         LOAD PREVIOUS SAVE AREA               00612199
+         LM    R14,R12,12(R13)    LOAD PREVIOUS REGISTERS               00612299
+         BR    R14                RETURN TO MAIN                        00612399
+         LTORG                                                          00612499
+PSAVE    DC 18F'-1'                                                     00612599
+PLINE    DC CL1' '                                                      00612699
+         DC CL131'TEST'                                                 00612799
+*************************************************                       00612869
+*                    SORT                                               00612969
+* R5 = BEGIN OF TABLE                                                   00613072
+* R6 = END OF TABLE                                                     00613199
+* R2 = LOW                                                              00613272
+* R7 = I                                                                00613372
+* R3 = POINTER TO TEMP1                                                 00613499
+* R4 = POINTER TO TEMP2                                                 00613599
+* R8 = POINTER TO TEMP3                                                 00613699
+* R10= POINTER TO TEMP4                                                 00613799
+*************************************************                       00613869
+SORT     CSECT                                                          00613999
+         STM   R14,R12,12(R13)     STORE REGISTERS                      00614099
+         LR    R12,R15             LOAD R12 AS BASE REGISTER            00614199
+         USING SORT,R12                                                 00614299
+         LA    R14,SSAVE           POINT R14 AT SSAVE                   00614399
+         ST    R14,8(R13)          LOAD FORWARD POINTER                 00614499
+         ST    R13,4(R14)          LOAD BACKWARD POINTER                00614599
+         LR    R13,R14             LOAD REGISTER R13 WITH R14           00614699
+         LM    R5,R6,0(R1)         R5 TABLE R6 EOT                      00614799
+         LA    R3,TEMP1            LOAD TEMP1 INTO R3                   00614899
+         LA    R4,TEMP2            LOAD TEMP2 INTO R4                   00614999
+         LA    R8,TEMP3            LOAD TEMP3 INTO R8                   00615099
+         LA    R10,TEMP4           LOAD TEMP4 INTO R10                  00615199
+*                                                                       00615299
+STOP     DS    0H                                                       00615399
+         CR    R5,R6               COMPARE START TO END                 00615499
+         BC    B'1010',EXITS       IF ADDRESS IS NOT LOWER EXIT         00615599
+         LR    R2,R5               LOAD R2 WITH R5 WHICH IS START       00615678
+         LA    R7,32(R5)           LOAD R7 WITH START PLUS 32           00615799
+*                                                                       00615899
+MSLOOP   DS    0H                                                       00615969
+         CR    R7,R6               COMPARE ADDRESS I TO ADDRESS END     00616099
+         BNL   EMTLOOP             BRANCH IF ADDRESS NOT HIGHER         00616199
+         MVC   0(32,R3),0(R2)                                           00616299
+         MVC   0(32,R4),0(R7)                                           00616399
+         CLC   TEMP1,TEMP2         COMPARE REGISTER R4 AND R11          00616499
+         BL    NLOW                BRANCH IF R4 IS HIGHER TO NLOW       00616599
+         LR    R2,R7               LOAD REGISTER R2 LOW WITH BEGIN      00616699
+*                                                                       00616799
+NLOW     DS    0H                                                       00616869
+         LA    R7,32(R7)           ADVANCE I POINTER                    00616999
+         B     MSLOOP              GO TO MID LOOP UNCONDITIONALLY       00617079
+*                                                                       00617199
+EMTLOOP  DS    0H                                                       00617269
+         MVC   0(32,R8),0(R5)      LOAD CONTENTS OF ADDRESS  R5         00617399
+         MVC   0(32,R10),0(R2)     LOAD CONTENTS OF ADDRESS  R2         00617499
+         MVC   0(32,R5),TEMP4      STORE LOW VALUE R8 INTO R5           00617599
+         MVC   0(32,R2),TEMP3      STORE BEGIN VALUE R6 INTO R2         00617699
+         LA    R5,32(R5)           ADVANCE BEGIN                        00617799
+         B     STOP                GO TO TOP OF LOOP                    00617878
+*                                                                       00617999
+EXITS    DS    0H                                                       00618069
+         L     R13,4(R13)          LOAD PREVIOUS SAVE AREA              00618199
+         LM    R14,R12,12(R13)     LOAD REGISTERS                       00618299
+         BR    R14                 BRANCH R9                            00618399
+         LTORG                                                          00618499
+SSAVE    DC  18F'-1'                                                    00618599
+TEMP1    DC CL32'TEST'                                                  00618699
+TEMP2    DC CL32'TEST'                                                  00618799
+TEMP3    DC CL32'TEST'                                                  00618899
+TEMP4    DC CL32'TEST'                                                  00618999
+*************************************************                       00619099
+*     MERGE SUBROUTINE                                                  00619199
+*     R7  START OF TABLE 1                                              00619299
+*     R2  START OF TABLE 2                                              00619399
+*     R3  START OF MERGED TABLE                                         00619499
+*     R4  EOT1                                                          00619599
+*     R5  EOT2                                                          00619699
+*     R6  ADDRESS OF EOT3                                               00619799
+*                                                                       00619899
+*                                                                       00619999
+*                                                                       00620099
+*                                                                       00620199
+*************************************************                       00620227
+MERGE    CSECT                                                          00620399
+         STM   R14,R12,12(R13)     STORE REGISTERS                      00620499
+         LR    R12,R15             LOAD R12 WITH R15                    00620599
+         USING MERGE,R12                                                00620699
+         LA    R14,MESAVE          LOAD R14 WITH MESAVE                 00620799
+         ST    R14,8(R13)          SET FORWARDS POINTER                 00620899
+         ST    R13,4(R14)          SET BACKWARDS POINTER                00620999
+         LR    R13,R14             LOARD R13 WITH R14                   00621099
+         LM    R2,R7,0(R1)         HOW IT LOADS DETAILED ABOVE          00621199
+         LA    R8,TEMP5            LOAD TEMP1 INTO R7                   00621299
+         LA    R9,TEMP6            LOAD TEMP2 INTO R8                   00621399
+*                                                                       00621499
+DO1      DS    0H                                                       00621599
+         CR    R7,R4               COMPARE TABLE 1 TO EOT 1             00621699
+         BE    ENDO1               BRANCH TO ENDO1                      00621799
+         CR    R2,R5               COMPARE TABLE 2 TO EOT 2             00621899
+         BE    ENDO1               BRANCH TO ENDO1                      00621999
+*                                                                       00622099
+         MVC   TEMP5(32),0(R7)      MOVE R1 TO TEMP1                    00622199
+         MVC   TEMP6(32),0(R2)      MOVE R2 TO TEMP2                    00622299
+         CLC   TEMP5,TEMP6         COMPARE TEMP1 AND TEMP2              00622399
+         BNL   ELSE1               BRANCH HIGH ELSE1                    00622499
+         MVC   0(32,R3),TEMP5      MOVE TEMP1 INTO MERGE TABLE          00622599
+         LA    R7,32(R7)           ADVANCE TABLE1 POINTER               00622699
+         B     ENDIF               BRANCH ENDIF                         00622799
+*                                                                       00622899
+ELSE1    DS    0H                                                       00622999
+         CLC   TEMP5,TEMP6         COMPARE TEMP1 AND TEMP2              00623099
+         BE    ELSE2               BRANCH NOT HIGH ELSE2                00623199
+         MVC   0(32,R3),TEMP6      MOVE TEMP2 INTO MERGE TABLE          00623299
+         LA    R2,32(R2)           ADVANCE TABLE 2 POINTER              00623399
+         B     ENDIF               BRANCH ENDIF                         00623499
+*                                                                       00623599
+ELSE2    DS    0H                                                       00623699
+         MVC   0(32,R3),TEMP5      MOVE TABLE1 TO MERGE TABLE           00623799
+         LA    R1,32(R1)           ADVANCE TABLE1 POINTER               00623899
+         LA    R2,32(R2)           ADVANCE TABLE2 POINTER               00623999
+         B     ENDIF               BRANCH ENDIF                         00624099
+*                                                                       00624199
+ENDIF    DS    0H                                                       00624299
+         LA    R3,32(R3)           ADVANCE MERGE TABLE POINTER          00624399
+         B     DO1                 BRANCH DO1                           00624499
+*                                                                       00624599
+ENDO1    DS    0H                                                       00624699
+*                                                                       00624799
+DO2      DS    0H                                                       00624899
+         CR    R7,R4               COMPARE TABLE1 TO EOT1               00624999
+         BE    ENDO2               BRANCH ENDO2 ON EQUAL                00625099
+         MVC   0(32,R3),0(R7)      MOVE TABLE1 INTO MERGE               00625199
+         LA    R7,32(R7)           ADVANCE TABLE 1 POINTER              00625299
+         LA    R3,32(R3)           ADVANCE TABLE 3 POINTER              00625399
+         B     DO2                 BRANCH DO2                           00625499
+*                                                                       00625599
+ENDO2    DS    0H                                                       00625699
+*                                                                       00625799
+DO3      DS    0H                                                       00625899
+         CR    R2,R5               COMPARE TABLE2 TO EOT2               00625999
+         BE    ENDO3               BRANCH ON EQUAL  ENDO3               00626099
+         MVC   0(32,R3),0(R2)      MOVE TABLE2 TO MERGE TABLE           00626199
+         LA    R2,32(R2)           ADVANCE TABLE 2 POINTER              00626299
+         LA    R3,32(R3)           ADVANCE TABLE 3 POINTER              00626399
+*                                                                       00626499
+ENDO3    DS    0H                                                       00626599
+         ST    R3,0(R6)            STORE EOT INTO EOT3                  00626699
+         L     R13,4(R13)          LOAD PREVIOUS SAVE AREA              00626799
+         LM    R14,R12,12(R13)     LOAD PREVIOUS REGISTERS              00626899
+         BR    R14                 BRANCH OUT                           00626999
+         LTORG                                                          00627099
+MESAVE   DC    18F'-1'                                                  00627199
+TEMP5    DC CL32'TEST'                                                  00627299
+TEMP6    DC CL32'TEST'                                                  00627399
+*************************************************                       00710000
+*                    EQUATES                    *                       00720099
+*************************************************                       00730000
+R0     EQU 0                                                            00740005
+R1     EQU 1                                                            00750000
+R2     EQU 2                                                            00760000
+R3     EQU 3                                                            00770014
+R4     EQU 4                                                            00780014
+R5     EQU 5                                                            00790014
+R6     EQU 6                                                            00800014
+R7     EQU 7                                                            00810014
+R8     EQU 8                                                            00820014
+R9     EQU 9                                                            00830014
+R10    EQU 10                                                           00840014
+R11    EQU 11                                                           00850014
+R12    EQU 12                                                           00860014
+R13    EQU 13                                                           00870017
+R14    EQU 14                                                           00880000
+R15    EQU 15                                                           00890003
+       END                                                              00900000
+/*                                                                      00910000
+//FT05F001 DD *                                                         00920014
+SKINNER, BILL                                                           00930099
+JOHNSON, RON                                                            00940099
+JONES,BILL                                                              00950099
+ANDERSON, SALLY                                                         00960099
+MURDOCK, LANCE                                                          00961099
+BATHMAN, PETER                                                          00962099
+SHERMAN, BOBBY                                                          00963099
+ZELMO, KAREN                                                            00964099
+BAILEY,MARY                                                             00965099
+LACKEY, JOHN                                                            00966099
+@                                                                       00967099
+BOUVIER, PATTY                                                          00968099
+SHORTS, JIM                                                             00969099
+BATH, ANITA                                                             00969199
+FLANDERS, NED                                                           00969299
+SIMPSON, HOMER J.                                                       00969399
+TERWILLIGER, BOB                                                        00969499
+JENKINS, FERGIE                                                         00969599
+BANKS, ERNIE                                                            00969699
+SANDBERG, RYNE                                                          00969799
+DAVIS, JODY                                                             00969899
+RICHARDS, MARY                                                          00969999
+MURDOCK, LANCE                                                          00970099
+RICHARDS, SANDRA                                                        00970199
+@                                                                       00970299
+/*                                                                      00971014
+//SYSPRINT DD SYSOUT=*                                                  00980014

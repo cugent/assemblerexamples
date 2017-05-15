@@ -1,0 +1,441 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 00.12.36 JOB06324 ---- MONDAY,    05 DEC 2016 ----
+ 00.12.36 JOB06324  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 00.12.36 JOB06324  ICH70001I KC03R0F  LAST ACCESS AT 00:09:43 ON MONDAY, DECEMB
+ 00.12.36 JOB06324  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 00.12.36 JOB06324  -                                         --TIMINGS (MINS.)-
+ 00.12.36 JOB06324  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 00.12.36 JOB06324  -KC03R0FA                      00     54 ******    .00     .
+ 00.12.36 JOB06324  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 00.12.36 JOB06324  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  05 DEC 2016 JOB EXECUTION DATE
+-          348 CARDS READ
+-          441 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-           48 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //FT05F001 DD *
+         6 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 00:09:43 ON MONDAY, DECEMBER 5, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO FT05F001
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB06324.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB06324.D0000102.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB06324.D0000103.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016340.0012
+ IEF032I STEP/STEP1   /STOP  2016340.0012
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   268K  EXT:        0K  SYS:    11464K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016340.0012
+ IEF033I  JOB/KC03R0FA/STOP  2016340.0012
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *PROGRAMMER: CALEB UGENT
+                                       3 *DATE 11/15/2016
+                                       4 *GOAL: BUILD TWO TABLES SORT THEM AND M
+                                       5 ***************************************
+                                       6 *
+                                       7 *
+                                       8 *
+                                       9 ***************************************
+ 000000                               10 TAB      DSECT
+ 000000                               11 $SCORE   DS  F
+ 000004                               12 $NAME    DS  CL28
+                                      13 ***************************************
+                                      14 *
+                                      15 *
+                                      16 *
+                                      17 ***************************************
+ 000000                               18 MAIN     CSECT
+ 000000 90EC D00C            0000C    19          STM   R14,R12,12(R13)    STORE
+ 000004 18CF                          20          LR    R12,R15            LOAD
+ 000000                               21          USING MAIN,R12
+ 000006 41E0 C374            00374    22          LA    R14,MSAVE          POINT
+ 00000A 50ED 0008            00008    23          ST    R14,8(R13)         STORE
+ 00000E 50DE 0004            00004    24          ST    R13,4(R14)         STORE
+ 000012 18DE                          25          LR    R13,R14            LOAD
+                                      26 *
+ 000014 E000 C320 0050 00320          27          XREAD CARD,80            READ
+ 00001A 95E8 C320      00320          28          CLI   CARD,C'Y'          CHECK
+ 00001E 4770 C026            00026    29          BNE   DNTRUNS            NOT E
+ 000022 9680 C370      00370          30          OI    BYTE,B'10000000'   SET B
+ 000026                               31 DNTRUNS  DS    0H
+ 000026 95E8 C324      00324          32          CLI   CARD+4,C'Y'        COMPA
+ 00002A 4770 C032            00032    33          BNE   DNTRUNS2           BRANC
+ 00002E 9601 C370      00370          34          OI    BYTE,B'00000001'   SET B
+ 000032                               35 DNTRUNS2 DS    0H
+                                      36 *
+ 000032 4110 C300            00300    37          LA    R1,PLIST           POINT
+ 000036 58F0 C070            00070    38          L     R15,=V(BUILD)      LOAD
+ 00003A 05EF                          39          BALR  R14,R15            CALL
+ 00003C E060 C080 0258 00080          40          XDUMP TABLE,600
+                                      41 *
+ 000042 9180 C370      00370          42          TM    BYTE,B'10000000'    CHEC
+ 000046 4780 C054            00054    43          BZ    NOSTAT             IF IT
+ 00004A 4110 C30C            0030C    44          LA    R1,PLIST2          POINT
+ 00004E 58F0 C074            00074    45          L     R15,=V(STAT)       POINT
+ 000052 05EF                          46          BALR  R14,R15            CALL
+                                      47 *
+ 000054                               48 NOSTAT   DS    0H
+ 000054 9101 C370      00370          49          TM    BYTE,B'00000001'   CHECK
+ 000058 4780 C066            00066    50          BZ    NOGRAPH            BRANC
+ 00005C 4110 C314            00314    51          LA    R1,PLIST3          POINT
+ 000060 58F0 C078            00078    52          L     R15,=V(GRAPHS)     LOAD
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000064 05EF                          53          BALR  R14,R15            BRANC
+                                      54 *
+ 000066                               55 NOGRAPH  DS    0H
+ 000066 58DD 0004            00004    56          L     R13,4(R13)         PREVI
+ 00006A 98EC D00C            0000C    57          LM    R14,R12,12(R13)    LOAD
+ 00006E 07FE                          58          BR    R14                EXIT
+                                      59 ***************************************
+                                      60 *               MAIN STORAGE
+                                      61 ***************************************
+                                      62          LTORG
+ 000070 000003C0                      63                =V(BUILD)
+ 000074 00000470                      64                =V(STAT)
+ 000078 00000610                      65                =V(GRAPHS)
+ 000080                               66          ORG MAIN+((*-MAIN+31)/32*32)
+ 000080 C5D5E3D9E840E3F1              67 TABLE    DC 20CL32'ENTRY T1'
+ 000300 0000032000000080              68 PLIST    DC A(CARD,TABLE,EOT)
+ 00030C 000000800000031C              69 PLIST2   DC A(TABLE,EOT)
+ 000314 000000800000031C              70 PLIST3   DC A(TABLE,EOT)
+ 00031C 0000000A                      71 EOT      DC F'10'
+ 000320 C3C1D9C4C3C1D9C4              72 CARD     DC 20CL4'CARD'
+ 000370 00                            73 BYTE     DC B'00000000'
+ 000374 FFFFFFFFFFFFFFFF              74 MSAVE    DC 18F'-1'
+                                      75 ***************************************
+                                      76 *BUILD INTERNAL SUBROUTINE
+                                      77 ***************************************
+ 0003C0                               78 BUILD    CSECT
+ 0003C0 90EC D00C            0000C    79          STM   R14,R12,12(R13)   STORE
+ 0003C4 18CF                          80          LR    R12,R15           SET BA
+ 0003C0                               81          USING BUILD,R12
+ 0003C6 41E0 C068            00428    82          LA    R14,BSAVE         POINT
+ 0003CA 50ED 0008            00008    83          ST    R14,8(R13)        SET FO
+ 0003CE 50DE 0004            00004    84          ST    R13,4(R14)        SET BA
+ 0003D2 18DE                          85          LR    R13,R14           LOAD R
+ 0003D4 9846 1000            00000    86          LM    R4,R6,0(R1)       CARD R
+ 000000                               87          USING TAB,R5
+ 0003D8 E004 0000 0050 00000          88 BTOP     XREAD 0(R4),80          READ I
+ 0003DE 4740 C03E            003FE    89          BC    B'0100',BDONE
+ 0003E2 D21B 5004 4003 00004 00003    90          MVC   $NAME(28),3(R4)    MOVE
+ 0003E8 F272 C060 4000 00420 00000    91          PACK  PGRADE(8),0(3,R4)  PACK
+ 0003EE 4F30 C060            00420    92          CVB   R3,PGRADE          CONVE
+ 0003F2 5030 5000            00000    93          ST    R3,$SCORE          STORE
+ 0003F6 4155 0020            00020    94          LA    R5,32(R5)         ADVANC
+ 0003FA 47F0 C018            003D8    95          B     BTOP              BRANCH
+ 0003FE                               96 BDONE    DS    0H
+ 0003FE                               97          DROP  R5                DROP T
+ 0003FE 5056 0000            00000    98          ST    R5,0(R6)          ST R5
+ 000402 58DD 0004            00004    99          L     R13,4(R13)        LOAD P
+ 000406 98EC D00C            0000C   100          LM    R14,R12,12(R13)   RESTOR
+ 00040A 07FE                         101          BR    R14               BRANCH
+                                     102          LTORG
+ 000410 E3C5E2                       103 GRADE1   DC    CL3'TES'
+ 000418                              104 DBWORD   DS    D
+ 000420 000000000000002C             105 PGRADE   DC    PL8'2'
+ 000428 FFFFFFFFFFFFFFFF             106 BSAVE    DC    18F'-1'
+                                     107 ***************************************
+                                     108 *                    STATS
+                                     109 ***************************************
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000470                              110 STAT     CSECT
+ 000470 90EC D00C            0000C   111          STM   R14,R12,12(R13)   STORE
+ 000474 18CF                         112          LR    R12,R15           LOAD R
+ 000470                              113          USING STAT,R12
+ 000476 E020 C100 0019 00570         114          XPRNT HEADING1,25       PRINT
+ 00047C 41E0 C0B4            00524   115          LA    R14,SSAVE         POINTE
+ 000480 50ED 0008            00008   116          ST    R14,8(R13)        SET FO
+ 000484 50DE 0004            00004   117          ST    R13,4(R14)        SET BA
+ 000488 18DE                         118          LR    R13,R14           LOAD R
+ 00048A 9856 1000            00000   119          LM    R5,R6,0(R1)       R5 TAB
+ 00048E 1B99                         120          SR    R9,R9             ZERO O
+ 000490 5866 0000            00000   121          L     R6,0(R6)          LOAD C
+ 000000                              122          USING TAB,R5            USE TA
+ 000494                              123 STATL    DS    0H
+ 000494 1956                         124          CR    R5,R6             COMPAR
+ 000496 4780 C060            004D0   125          BE    EXIT              EQUAL
+ 00049A 5830 5000            00000   126          L     R3,$SCORE         LOAD S
+ 00049E D21B C144 5004 005B4 00004   127          MVC   NAME1(28),$NAME   MOVE I
+ 0004A4 4E30 C170            005E0   128          CVD   R3,PGRADE3
+ 0004A8 F817 C178 C170 005E8 005E0   129          ZAP   PGRADE4(2),PGRADE3(8)
+ 0004AE 1A93                         130          AR    R9,R3
+ 0004B0 D203 C164 C0A0 005D4 00510   131          MVC   GRADES(4),=XL4'40202120'
+ 0004B6 DE03 C164 C178 005D4 005E8   132          ED    GRADES(4),PGRADE4
+ 0004BC 4155 0020            00020   133          LA    R5,32(R5)
+ 0004C0 FA10 C191 C190 00601 00600   134          AP    COUNTP(2),ONEP(1)
+ 0004C6 E020 C143 0025 005B3         135          XPRNT PLINE,37
+ 0004CC 47F0 C024            00494   136          B     STATL
+                                     137 *
+ 0004D0                              138 EXIT     DS    0H
+                                     139 *        XDUMP
+ 0004D0 E020 C199 0001 00609         140          XPRNT PEMPTY2,1
+ 0004D6 5C80 C0FC            0056C   141          M     R8,HUND
+ 0004DA 4E90 C188            005F8   142          CVD   R9,PGRADET
+                                     143 *        XDUMP
+ 0004DE F857 C193 C188 00603 005F8   144          ZAP   PGRADEB(6),PGRADET(8)
+ 0004E4 FD51 C193 C191 00603 00601   145          DP    PGRADEB(6),COUNTP(2)
+ 0004EA D20C C136 C0A4 005A6 00514   146          MVC   AVG(13),=XL13'4020202020
+ 0004F0 DE0C C136 C193 005A6 00603   147          ED    AVG(13),PGRADEB
+ 0004F6 E020 C119 0028 00589         148          XPRNT PLINE2,40
+ 0004FC                              149          DROP  R5
+ 0004FC E020 C199 0001 00609         150          XPRNT PEMPTY2,1
+ 000502 58DD 0004            00004   151          L     R13,4(R13)         LOAD
+ 000506 98EC D00C            0000C   152          LM    R14,R12,12(R13)    LOAD
+ 00050A 07FE                         153          BR    R14                RETUR
+                                     154          LTORG
+ 000510 40202120                     155                =XL4'40202120'
+ 000514 4020202020204B21             156                =XL13'4020202020204B2120
+ 000524 FFFFFFFFFFFFFFFF             157 SSAVE    DC 18F'-1'
+ 00056C 00000064                     158 HUND     DC F'100'
+ 000570 4040404040404040             159 HEADING1 DC CL25'           TEST STATIS
+ 000589 40                           160 PLINE2   DC CL1' '
+ 00058A C1E5C5D9C1C7C57A             161          DC CL28'AVERAGE:
+ 0005A6 E3C5E2E340404040             162 AVG      DC CL13'TEST'
+ 0005B3 40                           163 PLINE    DC CL1' '
+ 0005B4 E3C5E2E340404040             164 NAME1    DC CL28'TEST'
+ 0005D0 40404040                     165          DC CL4'    '
+ 0005D4 40404040                     166 GRADES   DC CL4'   '
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 0005D8                              167 DBWORD2  DS D
+ 0005E0 000000000000001C             168 PGRADE3  DC PL8'1'
+ 0005E8 001C                         169 PGRADE4  DC PL2'1'
+ 0005F0                              170 DVWORD3  DS D
+ 0005F8 000000000000000C             171 PGRADET  DC PL8'0'
+ 000600 1C                           172 ONEP     DC PL1'1'
+ 000601 000C                         173 COUNTP   DC PL2'0'
+ 000603 00000000000C                 174 PGRADEB  DC PL6'0'
+ 000609 40                           175 PEMPTY2  DC CL1' '
+                                     176 ***************************************
+                                     177 * GRAPH
+                                     178 * R7 A
+                                     179 * R8 B
+                                     180 * R9 C
+                                     181 * R10 D
+                                     182 * R11 F
+                                     183 ***************************************
+ 000610                              184 GRAPHS   CSECT
+ 000610 90EC D00C            0000C   185          STM   R14,R12,12(R13)     STOR
+ 000614 18CF                         186          LR    R12,R15             LOAD
+ 000610                              187          USING GRAPHS,R12
+ 000616 41E0 C180            00790   188          LA    R14,GSAVE           POIN
+ 00061A 50ED 0008            00008   189          ST    R14,8(R13)          LOAD
+ 00061E 50DE 0004            00004   190          ST    R13,4(R14)          LOAD
+ 000622 18DE                         191          LR    R13,R14             LOAD
+ 000624 9856 1000            00000   192          LM    R5,R6,0(R1)         R5 T
+ 000628 5866 0000            00000   193          L     R6,0(R6)            LOAD
+ 00062C E020 C128 0023 00738         194          XPRNT HEADING5,35         PRIN
+ 000632 E020 C14B 0001 0075B         195          XPRNT PEMPTY4,1
+ 000638 1B77                         196          SR    R7,R7               ZERO
+ 00063A 1B88                         197          SR    R8,R8               ZERO
+ 00063C 1B99                         198          SR    R9,R9               ZERO
+ 00063E 1BAA                         199          SR    R10,R10             ZERO
+ 000640 1BBB                         200          SR    R11,R11             ZERO
+ 000642 4140 C177            00787   201          LA    R4,STARS            LOAD
+ 000646 4120 C167            00777   202          LA    R2,PLINE3+17        LOAD
+ 000000                              203          USING TAB,R5              USE
+ 00064A                              204 GTOP     DS    0H
+ 00064A 1956                         205          CR    R5,R6               COMP
+ 00064C 4780 C090            006A0   206          BE    EXITG               EXIT
+ 000650 5830 5000            00000   207          L     R3,$SCORE            LOA
+ 000654 4155 0020            00020   208          LA    R5,32(R5)           ADVA
+ 000658 5930 C1C8            007D8   209          C     R3,NIN1             COMP
+ 00065C 4720 C070            00680   210          BH    AGRADE              BRAN
+ 000660 5930 C1CC            007DC   211          C     R3,EIGHT3           COMP
+ 000664 4720 C078            00688   212          BH    BGRADE              BRAN
+ 000668 5930 C1D0            007E0   213          C     R3,SEVEN5           COMP
+ 00066C 4720 C080            00690   214          BH    CGRADE              BRAN
+ 000670 5930 C1D4            007E4   215          C     R3,SIX7             COMP
+ 000674 4720 C088            00698   216          BH    DGRADE              BRAN
+ 000678 41BB 0001            00001   217          LA    R11,1(R11)          ADD
+ 00067C 47F0 C03A            0064A   218          B     GTOP                BRAN
+ 000680                              219 AGRADE   DS    0H
+                                     220 *        XPRNT DEBUG,10
+ 000680 4177 0001            00001   221          LA    R7,1(R7)            ADD
+ 000684 47F0 C03A            0064A   222          B     GTOP                BRAN
+ 000688                              223 BGRADE   DS    0H
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000688 4188 0001            00001   224          LA    R8,1(R8)            ADD
+ 00068C 47F0 C03A            0064A   225          B     GTOP                BRAN
+ 000690                              226 CGRADE   DS    0H
+ 000690 4199 0001            00001   227          LA    R9,1(R9)            ADD
+ 000694 47F0 C03A            0064A   228          B     GTOP                BRAN
+ 000698                              229 DGRADE   DS    0H
+ 000698 41AA 0001            00001   230          LA    R10,1(R10)          ADD
+ 00069C 47F0 C03A            0064A   231          B     GTOP                BRAN
+ 0006A0                              232 EXITG    DS    0H
+                                     233 *
+ 0006A0 5070 C21C            0082C   234          ST    R7,COUNTA           STOR
+ 0006A4 5080 C218            00828   235          ST    R8,COUNTB           STOR
+ 0006A8 5090 C214            00824   236          ST    R9,COUNTC           STOR
+ 0006AC 50A0 C210            00820   237          ST    R10,COUNTD          STOR
+ 0006B0 50B0 C20C            0081C   238          ST    R11,COUNTF          STOR
+                                     239 *
+ 0006B4 1B77                         240          SR    R7,R7               ZERO
+ 0006B6 1B88                         241          SR    R8,R8               ZERO
+ 0006B8 1B99                         242          SR    R9,R9
+ 0006BA 1BAA                         243          SR    R10,R10             ZERO
+ 0006BC 4170 C20C            0081C   244          LA    R7,COUNTF           SET
+ 0006C0 4180 C1D8            007E8   245          LA    R8,FRANGE           SET
+ 0006C4                              246 PLOOP    DS    0H
+ 0006C4 59A0 C14C            0075C   247          C     R10,FIVE            COMP
+ 0006C8 4780 C10A            0071A   248          BE    ENDG                BRAN
+ 0006CC D205 C157 8000 00767 00000   249          MVC   LABEL(6),0(R8)      MOVE
+ 0006D2 5897 0000            00000   250          L     R9,0(R7)            LOAD
+ 0006D6 4E90 C200            00810   251          CVD   R9,PAMOUNT          CONV
+ 0006DA F817 C208 C200 00818 00810   252          ZAP   PNUMBER(2),PAMOUNT(8)  Z
+ 0006E0 D203 C162 C120 00772 00730   253          MVC   NUM(4),=XL4'40202120'
+ 0006E6 DE03 C162 C208 00772 00818   254          ED    NUM(4),PNUMBER         E
+                                     255 *        XDUMP
+ 0006EC 5990 C124            00734   256          C     R9,ZERO1
+ 0006F0 4780 C0EA            006FA   257          BE    ZERO
+ 0006F4 0690                         258          BCTR  R9,0                  CO
+ 0006F6 4490 C150            00760   259          EX    R9,MOVEIT              E
+ 0006FA                              260 ZERO     DS    0H
+ 0006FA E020 C156 0019 00766         261          XPRNT PLINE3,25              P
+ 000700 41AA 0001            00001   262          LA    R10,1(R10)             A
+ 000704 4177 0004            00004   263          LA    R7,4(R7)               A
+ 000708 4188 0006            00006   264          LA    R8,6(R8)               A
+ 00070C 9240 C157      00767         265          MVI   PLINE3+1,C' '
+ 000710 D217 C157 C156 00767 00766   266          MVC   PLINE3+1(24),PLINE3
+ 000716 47F0 C0B4            006C4   267          B     PLOOP                  B
+                                     268 *
+ 00071A                              269 ENDG     DS    0H
+ 00071A E020 C14B 0001 0075B         270          XPRNT PEMPTY4,1
+ 000720                              271          DROP  R5                  DROP
+ 000720 58DD 0004            00004   272          L     R13,4(R13)          LOAD
+ 000724 98EC D00C            0000C   273          LM    R14,R12,12(R13)     LOAD
+ 000728 07FE                         274          BR    R14                 BRAN
+                                     275 ***************************************
+                                     276 *        GRAPH STORGAE
+                                     277 ***************************************
+                                     278          LTORG
+ 000730 40202120                     279                =XL4'40202120'
+ 000734 00000000                     280 ZERO1    DC  F'0'
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000738 4040404040404040             281 HEADING5 DC  CL35'           CLASS GRAD
+ 00075B 40                           282 PEMPTY4  DC  CL1' '
+ 00075C 00000005                     283 FIVE     DC  F'5'
+ 000760 D200 2000 4000 00000 00000   284 MOVEIT   MVC 0(0,R2),0(R4)
+ 000766 40                           285 PLINE3   DC  CL1' '
+ 000767 404040404040                 286 LABEL    DC  CL6'     '
+ 00076D 4040404040                   287          DC  CL5'     '
+ 000772 40404040                     288 NUM      DC  CL4'  '
+ 000776 40                           289          DC  CL1' '
+ 000777 E3C5E2E340404040             290 GRAPH2   DC  CL8'TEST'
+ 00077F 4040404040404040             291 COOOL    DC  CL8'   '
+ 000787 5C5C5C5C5C5C5C5C             292 STARS    DC  CL8'********'
+ 000790 FFFFFFFFFFFFFFFF             293 GSAVE    DC  18F'-1'
+ 0007D8 0000005B                     294 NIN1     DC  F'91'
+ 0007DC 00000053                     295 EIGHT3   DC  F'83'
+ 0007E0 0000004B                     296 SEVEN5   DC  F'75'
+ 0007E4 00000043                     297 SIX7     DC  F'67'
+ 0007E8 F060F6F74040                 298 FRANGE   DC  CL6'0-67  '
+ 0007EE F6F860F7F540                 299 DRANGE   DC  CL6'68-75 '
+ 0007F4 F7F660F8F340                 300 CRANGE   DC  CL6'76-83 '
+ 0007FA F8F460F9F140                 301 BRANGE   DC  CL6'84-91 '
+ 000800 F9F260F1F0F0                 302 ARANGE   DC  CL6'92-100'
+ 000808                              303 DWORD4   DS  D
+ 000810 000000000000000C             304 PAMOUNT  DC  PL8'0'
+ 000818 000C                         305 PNUMBER  DC  PL2'0'
+ 00081C 00000000                     306 COUNTF   DC  F'0'
+ 000820 00000000                     307 COUNTD   DC  F'0'
+ 000824 00000000                     308 COUNTC   DC  F'0'
+ 000828 00000000                     309 COUNTB   DC  F'0'
+ 00082C 00000000                     310 COUNTA   DC  F'0'
+                                     311 ***************************************
+                                     312 *                    EQUATES
+                                     313 ***************************************
+ 000000                              314 R0     EQU 0
+ 000001                              315 R1     EQU 1
+ 000002                              316 R2     EQU 2
+ 000003                              317 R3     EQU 3
+ 000004                              318 R4     EQU 4
+ 000005                              319 R5     EQU 5
+ 000006                              320 R6     EQU 6
+ 000007                              321 R7     EQU 7
+ 000008                              322 R8     EQU 8
+ 000009                              323 R9     EQU 9
+ 00000A                              324 R10    EQU 10
+ 00000B                              325 R11    EQU 11
+ 00000C                              326 R12    EQU 12
+ 00000D                              327 R13    EQU 13
+ 00000E                              328 R14    EQU 14
+ 00000F                              329 R15    EQU 15
+                                     330        END
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:   21220 HIGH:    2400 LEAVING:  469948 FREE B
+0*** ASSEMBLY TIME =    0.002 SECS,   165500 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+0BEGIN XSNAP - CALL     1 AT D0000042 USER STORAGE
+1                             CORE ADDRESSES SPECIFIED-     000080 TO 0002D8
+ 000080   00000063 D1D6C8D5 E2D6D56B 40D1D6C5    40404040 40404040 40404040 4040
+ 0000A0   0000003F C1D5C9E3 C140C2C1 E3C84040    40404040 40404040 40404040 4040
+ 0000C0   0000004F C4D9C5E6 40D74B40 C4D9C1E6    C5D9E240 40404040 40404040 4040
+ 0000E0   00000062 C9D4C140 C8D6C7C7 40404040    40404040 40404040 40404040 4040
+ 000100   0000000C D2E4D9E3 40C1D5E2 E6C5D940    40404040 40404040 40404040 4040
+ 000120   00000058 C1D5D540 C8D6D5D6 E4D94040    40404040 40404040 40404040 4040
+ 000140   00000053 C9E5C1D5 D5C140E3 C9D5D2D3    C5404040 40404040 40404040 4040
+ 000160   0000004E C2C5C140 E3C9C4E8 40404040    40404040 40404040 40404040 4040
+ 000180   00000042 E2C1D440 C6D9C5C5 D3E84040    40404040 40404040 40404040 4040
+ 0001A0   00000058 D1C9D440 E2C8D6D9 E3E24040    40404040 40404040 40404040 4040
+ 0001C0   0000004C C4C1D5C5 40D2D5C9 C7C8E340    40404040 40404040 40404040 4040
+ 0001E0   0000004D E44B40C3 4B40C6D6 D9C5E5C5    D9404040 40404040 40404040 4040
+ 000200   00000064 C4D6E4C7 40C14B40 C8D6D3C5    40404040 40404040 40404040 4040
+ 000220   0000005C D4C1D9E8 40E6C1E8 40404040    40404040 40404040 40404040 4040
+ 000240   00000037 E9C5D3D4 D66B40C2 D6C2C2E8    40404040 40404040 40404040 4040
+ 000260   C5D5E3D9 E840E3F1 40404040 40404040    40404040 40404040 40404040 4040
+   LINES    000280-0002C0    SAME AS ABOVE
+0
+           TEST STATISTIC
+ JOHNSON, JOE                      99
+ ANITA BATH                        63
+ DREW P. DRAWERS                   79
+ IMA HOGG                          98
+ KURT ANSWER                       12
+ ANN HONOUR                        88
+ IVANNA TINKLE                     83
+ BEA TIDY                          78
+ SAM FREELY                        66
+ JIM SHORTS                        88
+ DANE KNIGHT                       76
+ U. C. FOREVER                     77
+ DOUG A. HOLE                     100
+ MARY WAY                          92
+ ZELMO, BOBBY                      55
+
+ AVERAGE:                        76.93
+
+           CLASS GRADE DISTRIBUTION
+
+ 0-67          4 ****
+ 68-75         0
+ 76-83         5 *****
+ 84-91         2 **
+ 92-100        4 ****
+
+0*** EXECUTION TIME =    0.001 SECS.       679 INSTRUCTIONS EXECUTED -   679000
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

@@ -1,0 +1,235 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 19.22.23 JOB07306 ---- MONDAY,    10 OCT 2016 ----
+ 19.22.23 JOB07306  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 19.22.23 JOB07306  ICH70001I KC03R0F  LAST ACCESS AT 19:18:22 ON MONDAY, OCTOBE
+ 19.22.23 JOB07306  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 19.22.23 JOB07306  -                                         --TIMINGS (MINS.)-
+ 19.22.23 JOB07306  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 19.22.23 JOB07306  -KC03R0FA                      00     52 ******    .00     .
+ 19.22.23 JOB07306  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 19.22.23 JOB07306  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  10 OCT 2016 JOB EXECUTION DATE
+-          138 CARDS READ
+-          235 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-           21 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //FT05F001 DD *
+         6 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 19:18:22 ON MONDAY, OCTOBER 10, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO FT05F001
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB07306.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB07306.D0000102.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB07306.D0000103.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016284.1922
+ IEF032I STEP/STEP1   /STOP  2016284.1922
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   652K  EXT:        0K  SYS:    13028K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016284.1922
+ IEF033I  JOB/KC03R0FA/STOP  2016284.1922
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *PROGRAMMER: CALEB UGENT
+                                       3 *DATE 10/5/2016
+                                       4 ***************************************
+ 000000                                5 MAIN     CSECT
+ 000000                                6          USING MAIN,R15
+ 000000 4590 F020            00020     7          BAL   R9,BUILD            CALL
+ 000004 E060 F0F4 00C8 000F4           8          XDUMP TABLE,200
+ 00000A E020 F1D0 000E 001D0           9          XPRNT HEADING,14          PRIN
+ 000010 4590 F05C            0005C    10          BAL   R9,PRINT            CALL
+ 000014 E020 F1DE 000E 001DE          11          XPRNT HEADING2,14         PRIN
+ 00001A 4590 F080            00080    12          BAL   R9,PRINT5           CALL
+ 00001E 07FE                          13          BR    R14                 EXIT
+                                      14 ***************************************
+                                      15 *BUILD INTERNAL SUBROUTINE
+                                      16 ***************************************
+ 000020                               17 BUILD    DS    0H
+ 000020 4150 F0F4            000F4    18          LA    R5,TABLE            LOAD
+ 000024                               19 TLOOP    DS    0H
+ 000024 E000 F1EC 003C 001EC          20          XREAD CARD,60             READ
+ 00002A 4740 F056            00056    21          BC    B'0100',EXITB       CHEC
+ 00002E 1B44                          22          SR    R4,R4               ZERO
+ 000030 5340 F1EC            001EC    23          XDECI R4,CARD             READ
+ 000034 4710 F024            00024    24          BC    B'0001',TLOOP       CHEC
+ 000038 5045 0000            00000    25          ST    R4,0(R5)            STOR
+ 00003C 4155 0004            00004    26          LA    R5,4(R5)            ADVA
+ 000040                               27 MLOOP    DS    0H
+ 000040 1B33                          28          SR    R3,R3               ZERO
+ 000042 5331 0000            00000    29          XDECI R3,0(R1)            READ
+ 000046 4710 F024            00024    30          BC    B'0001',TLOOP       CHEC
+ 00004A 5035 0000            00000    31          ST    R3,0(R5)            STOR
+ 00004E 4155 0004            00004    32          LA    R5,4(R5)            ADVA
+ 000052 47F0 F040            00040    33          B     MLOOP               BRAN
+ 000056                               34 EXITB    DS    0H
+ 000056 5050 F1BC            001BC    35          ST    R5,EOT              ST R
+ 00005A 07F9                          36          BR    R9                  BRAN
+                                      37 ***************************************
+                                      38 *PRINT SUBROUTINE
+                                      39 ***************************************
+ 00005C                               40 PRINT    DS    0H
+ 00005C 4170 F0F4            000F4    41          LA    R7,TABLE            LOAD
+ 000060                               42 PTLOOP   DS    0H
+ 000060 5970 F1BC            001BC    43          C     R7,EOT              COMP
+ 000064 47A0 F07E            0007E    44          BC    B'1010',EXITP       EXIT
+ 000068 5827 0000            00000    45          L     R2,0(R7)            LOAD
+ 00006C 5220 F2C0            002C0    46          XDECO R2,PLINE2           PUSH
+ 000070 E020 F2C0 000C 002C0          47          XPRNT PLINE2,12           PRIN
+ 000076 4177 0004            00004    48          LA    R7,4(R7)            UPDA
+ 00007A 47F0 F060            00060    49          B     PTLOOP              LOOP
+ 00007E                               50 EXITP    DS    0H
+ 00007E 07F9                          51          BR    R9                  BACK
+                                      52 ***************************************
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                      53 *                    PRINT EVEN
+                                      54 ***************************************
+ 000080                               55 PRINT5   DS    0H
+ 000080 4150 F0F4            000F4    56          LA    R5,TABLE            LOAD
+ 000084 41A0 F23C            0023C    57          LA    R10,PLINE           LOAD
+ 000088 1B77                          58          SR    R7,R7               ZERO
+ 00008A 1B66                          59          SR    R6,R6               ZERO
+ 00008C 1B44                          60          SR    R4,R4               ZERO
+ 00008E                               61 EPTOP    DS    0H
+ 00008E 5950 F1BC            001BC    62          C     R5,EOT              COMP
+ 000092 47A0 F0D0            000D0    63          BC    B'1010',PRINTE      BRAN
+ 000096 5940 F1C4            001C4    64          C     R4,FIVE             COMP
+ 00009A 4780 F0D0            000D0    65          BE    PRINTE              BRAN
+ 00009E 5835 0000            00000    66          L     R3,0(R5)            LOAD
+ 0000A2 1873                          67          LR    R7,R3               LOAD
+ 0000A4 5C60 F1C0            001C0    68          M     R6,ONE              MULT
+ 0000A8 5D60 F1CC            001CC    69          D     R6,TWO              DIVI
+ 0000AC 5960 F1C8            001C8    70          C     R6,ZERO             COMP
+ 0000B0 4780 F0BC            000BC    71          BE    EVEN                BRAN
+ 0000B4 4155 0004            00004    72          LA    R5,4(R5)            ADVA
+ 0000B8 47F0 F08E            0008E    73          B     EPTOP               BRAN
+ 0000BC                               74 EVEN     DS    0H
+ 0000BC 523A 0000            00000    75          XDECO R3,0(R10)           PUSH
+ 0000C0 41AA 000C            0000C    76          LA    R10,12(R10)         ADVA
+ 0000C4 4155 0004            00004    77          LA    R5,4(R5)            ADVA
+ 0000C8 4144 0001            00001    78          LA    R4,1(R4)            ADD
+ 0000CC 47F0 F08E            0008E    79          B     EPTOP               BRAN
+ 0000D0                               80 PRINTE   DS    0H
+ 0000D0 E020 F23C 0084 0023C          81          XPRNT PLINE,132           PRIN
+ 0000D6 9240 F23D      0023D          82          MVI   PLINE+1,C' '        CLEA
+ 0000DA D283 F2BF F23C 002BF 0023C    83          MVC   PLINE+131,PLINE     PUSH
+ 0000E0 41A0 F23C            0023C    84          LA    R10,PLINE           RESE
+ 0000E4 5950 F1BC            001BC    85          C     R5,EOT              CHEC
+ 0000E8 47A0 F0F2            000F2    86          BC    B'1010',EXIT        EXIT
+ 0000EC 1B44                          87          SR    R4,R4               ZERO
+ 0000EE 47F0 F08E            0008E    88          B     EPTOP               BRAN
+ 0000F2                               89 EXIT     DS    0H
+ 0000F2 07F9                          90          BR    R9                  RETU
+                                      91 ***************************************
+                                      92 *                    VARIABLES
+                                      93 ***************************************
+ 0000F4 FFFFFFF1FFFFFFF1              94 TABLE    DC 50F'-15'
+ 0001BC 0000000A                      95 EOT      DC F'10'
+ 0001C0 00000001                      96 ONE      DC F'1'
+ 0001C4 00000005                      97 FIVE     DC F'5'
+ 0001C8 00000000                      98 ZERO     DC F'0'
+ 0001CC 00000002                      99 TWO      DC F'2'
+ 0001D0 40                           100 HEADING  DC CL1' '
+ 0001D1 E3C1C2D3C540D6E4             101          DC CL13'TABLE OUTPUT'
+ 0001DE 40                           102 HEADING2 DC CL1' '
+ 0001DF C5E5C5D540D5E4D4             103          DC CL13'EVEN NUMBERS'
+ 0001EC C3C1D9C4C3C1D9C4             104 CARD     DC 20CL4'CARD'
+ 00023C D4E840D7D3C9D5C5             105 PLINE    DC CL132'MY PLINE'
+ 0002C0 E3C5E2E340404040             106 PLINE2   DC CL12'TEST'
+                                     107 ***************************************
+                                     108 *                    EQUATES
+                                     109 ***************************************
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000000                              110 R0     EQU 0
+ 000001                              111 R1     EQU 1
+ 000002                              112 R2     EQU 2
+ 000003                              113 R3     EQU 3
+ 000004                              114 R4     EQU 4
+ 000005                              115 R5     EQU 5
+ 000006                              116 R6     EQU 6
+ 000007                              117 R7     EQU 7
+ 000008                              118 R8     EQU 8
+ 000009                              119 R9     EQU 9
+ 00000A                              120 R10    EQU 10
+ 00000B                              121 R11    EQU 11
+ 00000C                              122 R12    EQU 12
+ 00000D                              123 R13    EQU 13
+ 00000E                              124 R14    EQU 14
+ 00000F                              125 R15    EQU 15
+                                     126        END
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:    8944 HIGH:    1004 LEAVING:  483620 FREE B
+0*** ASSEMBLY TIME =    0.000 SECS,   127000 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+0BEGIN XSNAP - CALL     1 AT D000000A USER STORAGE
+0                             CORE ADDRESSES SPECIFIED-     0000F4 TO 0001BC
+ 0000E0   41A0F23C 5950F1BC 47A0F0F2 1B4447F0    F08E07F9 00000001 00000002 0000
+ 000100   FFFFFFF6 00000203 0000005A 00000032    FFFFFFFF 00000013 000006B7 0000
+ 000120   00001D6E 000007DE 0000008D 00000000    0000001F FFFFFE5D 000000DA 0000
+ 000140   00000135 FFFFFDFB 00000009 0000003E    00000059 00000131 000000FA 0000
+ 000160   00000076 FFFFFFAC 00000083 00000192    000013F2 00000079 FFFFFFA7 0000
+ 000180   FFFFFFB0 FFFFFFF1 FFFFFFF1 FFFFFFF1    FFFFFFF1 FFFFFFF1 FFFFFFF1 FFFF
+ 0001A0   FFFFFFF1 FFFFFFF1 FFFFFFF1 FFFFFFF1    FFFFFFF1 FFFFFFF1 FFFFFFF1 0000
+0
+ TABLE OUTPUT
+           1
+           2
+           3
+         -10
+         515
+          90
+          50
+          -1
+          19
+        1719
+           3
+        7534
+        2014
+         141
+           0
+          31
+        -419
+         218
+        9001
+         309
+        -517
+1          9
+          62
+          89
+         305
+         250
+         305
+         118
+         -84
+         131
+         402
+        5106
+         121
+         -89
+          15
+         -80
+ EVEN NUMBERS
+           2         -10          90          50        7534
+        2014           0         218          62         250
+         118         -84         402        5106         -80
+0*** EXECUTION TIME =    0.001 SECS.      1015 INSTRUCTIONS EXECUTED -  1015000
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

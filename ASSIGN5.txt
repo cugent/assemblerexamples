@@ -1,0 +1,167 @@
+//KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H                                00010000
+//STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'                                  00020002
+//STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        00030000
+//SYSIN DD *                                                            00040000
+*************************************************                       00050000
+*PROGRAMMER: CALEB UGENT                                                00060000
+*DATE 10/17/2016                                                        00070072
+*************************************************                       00120000
+MAIN     CSECT                                                          00130014
+         USING MAIN,R15                                                 00140029
+         SR    R11,R11             ZERO OUT R11                         00141069
+         BAL   R9,BUILD            CALL BUILD                           00150067
+         XDUMP TABLE,200                                                00160027
+         XPRNT HEADING,14          PRINT HEADING                        00170067
+         LA    R11,3(R11)          SET R3 TO 3                          00171069
+         BAL   R9,PRINT            CALL PRINT                           00180067
+         XPRNT HEADING3,8          PRINT OUT SORTING                    00180174
+         XDUMP TABLE,200                                                00180276
+         BAL   R9,SORT             CALL SORT                            00180374
+         XPRNT HEADING2,14         PRINT HEADING2                       00181067
+         LA    R11,3(R11)          SET R3 TO 6                          00182069
+         BAL   R9,PRINT            CALL PRINT EVEN                      00190069
+         BR    R14                 EXIT                                 00200067
+*************************************************                       00210027
+*BUILD INTERNAL SUBROUTINE                                              00220027
+*************************************************                       00230000
+BUILD    DS    0H                                                       00240027
+         LA    R5,TABLE            LOAD ADDRESS OF TABLE                00250067
+TLOOP    DS    0H                                                       00260031
+         XREAD CARD,60             READ IN DATA                         00280067
+         BC    B'0100',EXITB       CHECK EOF AND EXIT                   00290067
+         SR    R4,R4               ZERO OUT R4                          00291068
+         XDECI R4,CARD             READ INTO HEX                        00300067
+         BC    B'0001',TLOOP       CHECK IF ITS VALID                   00310067
+         ST    R4,0(R5)            STORE IN TABLE                       00320067
+         LA    R5,4(R5)            ADVANCE TABLE POINTER                00330067
+MLOOP    DS    0H                                                       00340031
+         SR    R3,R3               ZERO OUT R3                          00350067
+         XDECI R3,0(R1)            READ IN R3                           00360067
+         BC    B'0001',TLOOP       CHECK IF VALID                       00370067
+         ST    R3,0(R5)            STORE IN TABLE                       00400067
+         LA    R5,4(R5)            ADVANCE POINTER                      00410067
+         B     MLOOP               BRANCH BACK TO MID                   00420067
+EXITB    DS    0H                                                       00430027
+         ST    R5,EOT              ST R5 IN EOT                         00440067
+         BR    R9                  BRANCH TO MAIN                       00450067
+*************************************************                       00601050
+*                    PRINT                                              00602069
+*************************************************                       00603050
+PRINT    DS    0H                                                       00604069
+         LA    R5,TABLE            LOAD TABLE ADDRESS                   00605060
+         LA    R10,PLINE           LOAD PLINE ADDRESS                   00605160
+         SR    R4,R4                                                    00605269
+EPTOP    DS    0H                                                       00609050
+         C     R5,EOT              COMPARE R5 TO EOT                    00609160
+         BC    B'1010',PRINTE      BRANCH TO PRINTE                     00609260
+         CR    R4,R11              COMPARE R4 TO R11                    00609369
+         BE    PRINTE              BRANCH ON EVEN TO PRINT E            00609460
+         L     R3,0(R5)            LOAD R3 WITH R5                      00609560
+         XDECO R3,0(R10)           PUSH TO PLINE                        00610460
+         LA    R10,12(R10)         ADVANCE PLINE POINTER                00610560
+         LA    R5,4(R5)            ADVANCE TABLE POINTER                00610660
+         LA    R4,1(R4)            ADD ONE TO COUNTER                   00610767
+         B     EPTOP               BRANCH TOP                           00610860
+PRINTE   DS    0H                                                       00610951
+         XPRNT PLINE,132           PRINT OUT PLINE                      00611060
+         MVI   PLINE+1,C' '        CLEAR OUT PLINE                      00611160
+         MVC   PLINE+131,PLINE     PUSH CLEAR TO PLINE                  00611260
+         LA    R10,PLINE           RESET PLINE POINTER                  00611360
+         C     R5,EOT              CHECK FOR EOT                        00611460
+         BC    B'1010',EXIT        EXIT IF IT IS                        00611560
+         SR    R4,R4               ZERO OUT R4                          00611660
+         B     EPTOP               BRANCH TOP                           00611760
+EXIT     DS    0H                                                       00611850
+         BR    R9                  RETURN TO MAIN                       00611960
+*************************************************                       00612069
+*                    SORT                                               00612169
+* R5 = BEGIN OF TABLE                                                   00612272
+* R3 = END OF TABLE                                                     00612372
+* R2 = LOW                                                              00612472
+* R7 = I                                                                00612572
+*                                                                       00612672
+*                                                                       00612772
+*************************************************                       00612869
+SORT     DS    0H                                                       00612969
+         LA    R5,TABLE            LOAD TABLE A INTO R5                 00613069
+         L     R3,EOT              LOAD EOT A INTO R3                   00613199
+         S     R3,FOUR            SUBTRACT FOUR FROM EOT TO GET END     00613286
+STOP     DS    0H                                                       00613369
+         CR    R5,R3               COMPARE START TO END                 00613469
+         BC    B'1010',EXITS               IF ADDRESS IS NOT LOWER EXIT 00613599
+*        XPRNT DEBUG,13                                                 00613799
+         LR    R2,R5               LOAD R2 WITH R5 WHICH IS START       00613878
+         SR    R7,R7               ZERO OUT R7                          00613969
+         LA    R7,4(R5)            LOAD R7 WITH START PLUS A FW         00614078
+MSLOOP   DS    0H                                                       00614169
+         CR    R7,R3               COMPARE ADDRESS I TO ADDRESS END     00614278
+         BNL   EMTLOOP     BRANCH IF ADDRESS NOT HIGHER                 00614399
+*        XPRNT DEBUG,13                                                 00614499
+         L     R4,0(R2)            LOAD CONTENTS OF ADDRESS R2 INTO R4  00614578
+         L     R11,0(R7)           LOAD CONTENTS OF ADDRESS R7 INTO R11 00614678
+         CR    R4,R11              COMPARE REGISTER R4 AND R11          00614778
+         BH    NLOW                BRANCH IF R4 IS HIGHER TO NLOW       00614898
+         LR    R2,R7               LOAD REGISTER R2 LOW WITH BEGIN      00614978
+NLOW     DS    0H                                                       00615069
+         LA    R7,4(R7)            ADVANCE I POINTER                    00615169
+         B     MSLOOP              GO TO MID LOOP UNCONDITIONALLY       00615279
+EMTLOOP  DS    0H                                                       00615369
+         L     R6,0(R5)            LOAD CONTENTS OF ADDRESS  R5         00615478
+         L     R8,0(R2)            LOAD CONTENTS OF ADDRESS  R2         00615578
+         ST    R8,0(R5)            STORE LOW VALUE R8 INTO R5           00615678
+         ST    R6,0(R2)            STORE BEGIN VALUE R6 INTO R2         00615778
+         LA    R5,4(R5)            ADVANCE BEGIN                        00615874
+         B     STOP                GO TO TOP OF LOOP                    00615978
+EXITS    DS    0H                                                       00616069
+*        XPRNT DEBUG,13                                                 00616183
+         BR    R9                  BRANCH R9                            00616272
+*************************************************                       00617027
+*                    VARIABLES                                          00620013
+*************************************************                       00630000
+         ORG MAIN+((*-MAIN+31)/32*32)                                   00631075
+TABLE    DC 50F'-1'                                                     00640069
+EOT      DC F'10'                                                       00650027
+ONE      DC F'1'                                                        00651050
+FIVE     DC F'5'                                                        00652050
+ZERO     DC F'0'                                                        00653050
+TWO      DC F'2'                                                        00654050
+FOUR     DC F'4'                                                        00655086
+DEBUG    DC CL1' '                                                      00656079
+         DC CL12'THIS HAS RUN'                                          00657079
+HEADING  DC CL1' '                                                      00660017
+         DC CL13'TABLE OUTPUT'                                          00670034
+HEADING2 DC CL1' '                                                      00671054
+         DC CL13'SORTED PRINT'                                          00672074
+HEADING3 DC CL1' '                                                      00673074
+         DC CL7'SORTING'                                                00674074
+CARD     DC 20CL4'CARD'                                                 00680014
+PLINE    DC CL132'MY PLINE'                                             00690027
+PLINE2   DC CL12'TEST'                                                  00700039
+*************************************************                       00710000
+*                    EQUATES                                            00720013
+*************************************************                       00730000
+R0     EQU 0                                                            00740005
+R1     EQU 1                                                            00750000
+R2     EQU 2                                                            00760000
+R3     EQU 3                                                            00770014
+R4     EQU 4                                                            00780014
+R5     EQU 5                                                            00790014
+R6     EQU 6                                                            00800014
+R7     EQU 7                                                            00810014
+R8     EQU 8                                                            00820014
+R9     EQU 9                                                            00830014
+R10    EQU 10                                                           00840014
+R11    EQU 11                                                           00850014
+R12    EQU 12                                                           00860014
+R13    EQU 13                                                           00870017
+R14    EQU 14                                                           00880000
+R15    EQU 15                                                           00890003
+       END                                                              00900000
+/*                                                                      00910000
+//FT05F001 DD *                                                         00920014
+1  2    3   -10          515   90 50      -1    19  1719    60205       00930032
+3        7534    2014             141  0   31    -419    218 111        00940032
+9001  309        -517 9 62  89  305   250 305 118                       00950032
+-84                  131  402   5106  121  -89 15   -80                 00960032
+/*                                                                      00970014
+//SYSPRINT DD SYSOUT=*                                                  00980014

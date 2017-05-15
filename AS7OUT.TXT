@@ -1,0 +1,147 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 08.25.00 JOB01777 ---- MONDAY,    07 NOV 2016 ----
+ 08.25.00 JOB01777  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 08.25.00 JOB01777  ICH70001I KC03R0F  LAST ACCESS AT 08:24:30 ON MONDAY, NOVEMB
+ 08.25.00 JOB01777  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 08.25.00 JOB01777  -                                         --TIMINGS (MINS.)-
+ 08.25.00 JOB01777  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 08.25.00 JOB01777  -KC03R0FA                      00     44 ******    .00     .
+ 08.25.00 JOB01777  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 08.25.00 JOB01777  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  07 NOV 2016 JOB EXECUTION DATE
+-           95 CARDS READ
+-          147 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-           14 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //FT05F001 DD *
+         6 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 08:24:30 ON MONDAY, NOVEMBER 7, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO FT05F001
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB01777.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB01777.D0000102.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB01777.D0000103.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016312.0825
+ IEF032I STEP/STEP1   /STOP  2016312.0825
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   268K  EXT:        0K  SYS:    11584K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016312.0825
+ IEF033I  JOB/KC03R0FA/STOP  2016312.0825
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *PROGRAMMER: CALEB UGENT
+                                       3 *DATE 9/11/2016
+                                       4 *REGISTERS:
+                                       5 ***************************************
+ 000000                                6 MAIN     CSECT
+ 000000                                7          USING MAIN,R15
+ 000000 1B55                           8          SR    R5,R5        ZERO OUT R5
+ 000002 E000 F09F 0050 0009F           9 TOP      XREAD CARD,80      READ IN CAR
+ 000008 4740 F058            00058    10          BC    B'0100',EXIT         EXI
+ 00000C F201 F0EF F09F 000EF 0009F    11          PACK  NUMM(1),MONTH(2)     PAC
+ 000012 F235 F0F0 F0A4 000F0 000A4    12          PACK  NUMI(4),INRATE(6)   PACK
+                                      13 *        XDUMP NUMI,6
+ 000018 FA53 F100 F0F0 00100 000F0    14          AP    TOTAL(6),NUMI(4)    ADD
+ 00001E D208 F107 F146 00107 00146    15          MVC   RENT(9),=XL9'20206B20202
+ 000024 DE08 F107 F0F0 00107 000F0    16          ED    RENT(9),NUMI      EDIT O
+ 00002A D201 F116 F14F 00116 0014F    17          MVC   MONTHS(2),=XL1'2120' MOV
+ 000030 DE01 F116 F0EF 00116 000EF    18          ED    MONTHS(2),NUMM    EDIT O
+ 000036 F853 F0F4 F0F0 000F4 000F0    19          ZAP   NUMD(6),NUMI(4)   MOVE N
+ 00003C FC50 F0F4 F0EF 000F4 000EF    20          MP    NUMD(6),NUMM(1)   MULTIP
+ 000042 D20D F125 F138 00125 00138    21          MVC   TDUE(14),=XL14'2020206B2
+ 000048 DE0D F125 F0F4 00125 000F4    22          ED    TDUE(14),NUMD EDIT OUT T
+ 00004E E020 F106 0032 00106          23          XPRNT PLINE,50      PRINT OUT
+ 000054 47F0 F002            00002    24          B     TOP           BRANCH TO
+ 000058 07FE                          25 EXIT     BR    R14           EXIT
+                                      26 ***************************************
+                                      27 *                    VARIABLES
+                                      28 ***************************************
+ 00005A 40                            29 HEADING  DC CL1' '
+ 00005B 4040404040404040              30          DC CL25'              RENT REP
+ 000074 40                            31 HEADING2 DC CL1' '
+ 000075 40404040D4D6D5E3              32          DC CL18'    MONTHS OVERDUE'
+ 000087 404040C1D4D6E4D5              33          DC CL11'   AMOUNT'
+ 000092 404040E3D6E3C1D3              34          DC CL13'   TOTAL DUE'
+ 00009F                               35 CARD     DC 0CL80' '
+ 00009F C8C9                          36 MONTH    DC CL2'HI'
+ 0000A1 C1C1C1                        37          DC CL3'AAA'
+ 0000A4 D9C1E3C54040                  38 INRATE   DC CL6'RATE'
+ 0000AA F6F9404040404040              39 PADD     DC CL69'69'
+                                      40 *
+ 0000EF 0C                            41 NUMM     DC PL1'0'
+ 0000F0 0000000C                      42 NUMI     DC PL4'0'
+ 0000F4 00000000000C                  43 NUMD     DC PL6'0'
+ 0000FA 00000000000C                  44 AVERAGE  DC PL6'0'
+ 000100 00000000000C                  45 TOTAL    DC PL6'0'
+                                      46 *
+ 000106 40                            47 PLINE    DC CL1' '
+ 000107 E3C5E2E340404040              48 RENT     DC CL9'TEST'
+ 000110 40C6D6D94040                  49          DC CL6' FOR  '
+ 000116 F140                          50 MONTHS   DC CL2'1'
+ 000118 40D4D6D5E3C84DE2              51          DC CL13' MONTH(S),   '
+ 000125 E3C5E2E340404040              52 TDUE     DC CL14'TEST'
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000133 40C4E4C54B                    53          DC CL5' DUE.'
+                                      54 ***************************************
+                                      55 *                    EQUATES
+                                      56 ***************************************
+ 000000                               57 R0     EQU 0
+ 000001                               58 R1     EQU 1
+ 000002                               59 R2     EQU 2
+ 000003                               60 R3     EQU 3
+ 000004                               61 R4     EQU 4
+ 000005                               62 R5     EQU 5
+ 000006                               63 R6     EQU 6
+ 000007                               64 R7     EQU 7
+ 000008                               65 R8     EQU 8
+ 000009                               66 R9     EQU 9
+ 00000A                               67 R10    EQU 10
+ 00000B                               68 R11    EQU 11
+ 00000C                               69 R12    EQU 12
+ 00000D                               70 R13    EQU 13
+ 00000E                               71 R14    EQU 14
+ 00000F                               72 R15    EQU 15
+                                      73        END
+ 000138 2020206B2020206B              74                =XL14'2020206B2020206B20
+ 000146 20206B2020214B20              75                =XL9'20206B2020214B2020'
+ 00014F 20                            76                =XL1'2120'
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:    5048 HIGH:     996 LEAVING:  487524 FREE B
+0*** ASSEMBLY TIME =    0.000 SECS,    77000 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+ 501.50 FOR  7 MONTH(S),   3,510.50 DUE.
+ 190.00 FOR  4 MONTH(S),   760.00 DUE.
+ 1,182.90 FOR  7 MONTH(S),   8,280.30 DUE.
+ 350.99 FOR  1 MONTH(S),   350.99 DUE.
+ 200.00 FOR  5 MONTH(S),   1,000.00 DUE.
+ 131.00 FOR  8 MONTH(S),   1,048.00 DUE.
+ 504.00 FOR  2 MONTH(S),   1,008.00 DUE.
+ 1,300.00 FOR  5 MONTH(S),   6,500.00 DUE.
+ 142.00 FOR  9 MONTH(S),   1,278.00 DUE.
+ 505.50 FOR  1 MONTH(S),   505.50 DUE.
+ 419.99 FOR  1 MONTH(S),   419.99 DUE.
+ 1,526.00 FOR   MONTH(S),   .00 DUE.
+ 160.00 FOR  2 MONTH(S),   320.00 DUE.
+ 1,571.00 FOR  9 MONTH(S),   14,139.00 DUE.
+ 1,115.00 FOR  8 MONTH(S),   8,920.00 DUE.
+0*** EXECUTION TIME =    0.000 SECS.       229 INSTRUCTIONS EXECUTED -   229000
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

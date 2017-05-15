@@ -1,0 +1,138 @@
+//KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H                                00010000
+//STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'                                  00020002
+//STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        00030000
+//SYSIN DD *                                                            00040000
+*************************************************                       00050000
+*PROGRAMMER: CALEB UGENT                                                00060000
+*DATE 10/5/2016                                                         00070062
+*************************************************                       00120000
+MAIN     CSECT                                                          00130014
+         USING MAIN,R15                                                 00140029
+         BAL   R9,BUILD         CALL BUILD                              00150049
+         XDUMP TABLE,200                                                00160027
+         XPRNT HEADING,14       PRINT HEADING                           00170049
+         BAL   R9,PRINT         CALL PRINT                              00180049
+         XPRNT HEADING2,14      PRINT HEADING2                          00181055
+         BAL   R9,PRINT5        CALL PRINT EVEN                         00190053
+         BR    R14              EXIT                                    00200049
+*************************************************                       00210027
+*BUILD INTERNAL SUBROUTINE                                              00220027
+*************************************************                       00230000
+BUILD    DS    0H                                                       00240027
+         LA    R5,TABLE          LOAD ADDRESS OF TABLE                  00250049
+TLOOP    DS    0H                                                       00260031
+         XREAD CARD,80           READ IN DATA                           00280049
+         BC    B'0100',EXITB     CHECK EOF AND EXIT                     00290049
+         SR    R4,R4                                                    00291061
+         XDECI R4,CARD           READ INTO HEX                          00300049
+         BC    B'0001',TLOOP      CHECK IF ITS VALID                    00310065
+         ST    R4,0(R5)          STORE IN TABLE                         00320049
+         LA    R5,4(R5)          ADVANCE TABLE POINTER                  00330049
+MLOOP    DS    0H                                                       00340031
+         SR    R3,R3                                                    00350061
+         XDECI R3,0(R1)          READ IN R3                             00360049
+         BC    B'0001',TLOOP     CHECK IF VALID                         00370064
+         ST    R3,0(R5)          STORE IN TABLE                         00400049
+         LA    R5,4(R5)          ADVANCE POINTER                        00410049
+         B     MLOOP             BRANCH BACK TO MID                     00420060
+EXITB    DS    0H                                                       00430027
+         ST    R5,EOT            ST R5 IN EOT                           00440049
+         BR    R9                BRANCH TO MAIN                         00450049
+*************************************************                       00460034
+*PRINT SUBROUTINE                                                       00470034
+*************************************************                       00480034
+PRINT    DS    0H                                                       00490034
+         LA    R7,TABLE            LOAD ADDRESS OF TABLE                00500049
+PTLOOP   DS    0H                                                       00510034
+         C     R7,EOT              COMPARE TO EOT                       00520049
+         BC    B'1010',EXITP       EXIT IF IT IS                        00530049
+         L     R2,0(R7)            LOAD R2 WITH R7 DATA                 00540049
+         XDECO R2,PLINE2           PUSH TO PLINE2                       00550049
+         XPRNT PLINE2,12           PRINT PLINE2                         00560049
+         LA    R7,4(R7)                                                 00570049
+         B     PTLOOP              LOOP BACK TOP                        00580049
+EXITP    DS    0H                                                       00590035
+         BR    R9                  BACK TO MAIN                         00600049
+*************************************************                       00601050
+*                    PRINT EVEN                                         00602050
+*************************************************                       00603050
+PRINT5   DS    0H                                                       00604050
+         LA    R5,TABLE            LOAD TABLE ADDRESS                   00605060
+         LA    R10,PLINE           LOAD PLINE ADDRESS                   00605160
+         SR    R7,R7               ZERO OUT R7                          00605260
+         SR    R6,R6               ZERO OUT R6                          00606060
+         SR    R4,R4               ZERO OUT R4                          00608060
+EPTOP    DS    0H                                                       00609050
+         C     R5,EOT              COMPARE R5 TO EOT                    00609160
+         BC    B'1010',PRINTE      BRANCH TO PRINTE                     00609260
+         C     R4,FIVE             COMPARE R4 TO FIVE                   00609360
+         BE    PRINTE              BRANCH ON EVEN TO PRINT E            00609460
+         L     R3,0(R5)            LOAD R3 WITH R5                      00609560
+         LR    R7,R3               LOAD REGISTER 7 WITH 3               00609660
+         M     R6,ONE              MULTIPLY R6 BY ONE                   00609760
+         D     R6,TWO              DIVID R7 BY TWO                      00609860
+         C     R6,ZERO             COMPARE REMAINDER TO ZERO            00609960
+         BE    EVEN                BRANCH ON EQUAL TO EVEN              00610060
+         LA    R5,4(R5)            ADVANCE TABLE POINTER                00610160
+         B     EPTOP               BRANCH TOP                           00610260
+EVEN     DS    0H                                                       00610350
+         XDECO R3,0(R10)           PUSH TO PLINE                        00610460
+         LA    R10,12(R10)         ADVANCE PLINE POINTER                00610560
+         LA    R5,4(R5)            ADVANCE TABLE POINTER                00610660
+         A     R4,ONE              ADD ONE TO COUNTER                   00610760
+         B     EPTOP               BRANCH TOP                           00610860
+PRINTE   DS    0H                                                       00610951
+         XPRNT PLINE,132           PRINT OUT PLINE                      00611060
+         MVI   PLINE+1,C' '        CLEAR OUT PLINE                      00611160
+         MVC   PLINE+131,PLINE     PUSH CLEAR TO PLINE                  00611260
+         LA    R10,PLINE           RESET PLINE POINTER                  00611360
+         C     R5,EOT              CHECK FOR EOT                        00611460
+         BC    B'1010',EXIT        EXIT IF IT IS                        00611560
+         SR    R4,R4               ZERO OUT R4                          00611660
+         B     EPTOP               BRANCH TOP                           00611760
+EXIT     DS    0H                                                       00611850
+         BR    R9                  RETURN TO MAIN                       00611960
+*************************************************                       00612027
+*                    VARIABLES                                          00620013
+*************************************************                       00630000
+TABLE    DC 50F'-15'                                                    00640027
+EOT      DC F'10'                                                       00650027
+ONE      DC F'1'                                                        00651050
+FIVE     DC F'5'                                                        00652050
+ZERO     DC F'0'                                                        00653050
+TWO      DC F'2'                                                        00654050
+HEADING  DC CL1' '                                                      00660017
+         DC CL13'TABLE OUTPUT'                                          00670034
+HEADING2 DC CL1' '                                                      00671054
+         DC CL13'EVEN NUMBERS'                                          00672055
+CARD     DC 20CL4'CARD'                                                 00680014
+PLINE    DC CL132'MY PLINE'                                             00690027
+PLINE2   DC CL12'TEST'                                                  00700039
+*************************************************                       00710000
+*                    EQUATES                                            00720013
+*************************************************                       00730000
+R0     EQU 0                                                            00740005
+R1     EQU 1                                                            00750000
+R2     EQU 2                                                            00760000
+R3     EQU 3                                                            00770014
+R4     EQU 4                                                            00780014
+R5     EQU 5                                                            00790014
+R6     EQU 6                                                            00800014
+R7     EQU 7                                                            00810014
+R8     EQU 8                                                            00820014
+R9     EQU 9                                                            00830014
+R10    EQU 10                                                           00840014
+R11    EQU 11                                                           00850014
+R12    EQU 12                                                           00860014
+R13    EQU 13                                                           00870017
+R14    EQU 14                                                           00880000
+R15    EQU 15                                                           00890003
+       END                                                              00900000
+/*                                                                      00910000
+//FT05F001 DD *                                                         00920014
+1  2    3   -10          515   90 50      -1    19  1719    60205       00930032
+3        7534    2014             141  0   31    -419    218 111        00940032
+9001  309        -517 9 62  89  305   250 305 118                       00950032
+-84                  131  402   5106  121  -89 15   -80                 00960032
+/*                                                                      00970014
+//SYSPRINT DD SYSOUT=*                                                  00980014

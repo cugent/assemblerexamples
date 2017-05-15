@@ -1,0 +1,98 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 15.43.26 JOB05462 ---- FRIDAY,    02 SEP 2016 ----
+ 15.43.26 JOB05462  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 15.43.26 JOB05462  ICH70001I KC03R0F  LAST ACCESS AT 15:42:38 ON FRIDAY, SEPTEM
+ 15.43.26 JOB05462  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 15.43.26 JOB05462  -                                         --TIMINGS (MINS.)-
+ 15.43.26 JOB05462  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 15.43.26 JOB05462  -KC03R0FA                      00     37 ******    .00     .
+ 15.43.26 JOB05462  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 15.43.26 JOB05462  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  02 SEP 2016 JOB EXECUTION DATE
+-           40 CARDS READ
+-           98 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-            9 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 15:42:38 ON FRIDAY, SEPTEMBER 2, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB05462.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB05462.D0000102.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016246.1543
+ IEF032I STEP/STEP1   /STOP  2016246.1543
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   268K  EXT:        0K  SYS:    11376K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016246.1543
+ IEF033I  JOB/KC03R0FA/STOP  2016246.1543
+         CPU:     0 HR  00 MIN  00.00 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *PROGRAMMER: CALEB UGENT
+                                       3 *DATE 9/2/2016
+                                       4 *REGISTERS:
+                                       5 *R15 BASE R14 END R1 STORES NUM 1 R2 ST
+                                       6 ***************************************
+ 000000                                7 MAIN   CSECT
+ 000000                                8        USING MAIN,R15
+ 000000 5810 F02C            0002C     9        L  R1,X'02C'(R0,R15)  LOAD R1 WI
+ 000004 5820 F030            00030    10        L  R2,X'030'(R0,R15)  LOAD R2 WI
+ 000008 1B21                          11        SR R2,R1              SUBTRACT R
+ 00000A E160 0000 0000 00000          12        XDUMP
+ 000010 5810 F02C            0002C    13        L  R1,X'02C'(R0,R15)  LOAD R1 WI
+ 000014 5820 F030            00030    14        L  R2,X'030'(R0,R15)  LOAD R2 WI
+ 000018 1A12                          15        AR R1,R2              ADD R1 AND
+ 00001A E160 0000 0000 00000          16        XDUMP
+ 000020 5010 F034            00034    17        ST R1,X'034'(R0,R15)  STORE R1 I
+ 000024 E060 F034 0008 00034          18        XDUMP ANS,8           OUTPUT ANS
+ 00002A 07FE                          19        BR R14                BRANCH 14
+                                      20 ***************************************
+                                      21 *VARIABLES
+                                      22 ***************************************
+ 00002C 00000019                      23 NUM1   DC F'25'              FULLWORD =
+ 000030 00000025                      24 NUM2   DC F'37'              FULLWORD =
+ 000034 00000001                      25 ANS    DC F'1'               FULLWORD C
+                                      26 ***************************************
+                                      27 *EQUATES
+                                      28 ***************************************
+ 000000                               29 R0     EQU 0
+ 000001                               30 R1     EQU 1
+ 000002                               31 R2     EQU 2
+ 00000E                               32 R14    EQU 14
+ 00000F                               33 R15    EQU 15
+                                      34        END
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:    2772 HIGH:     448 LEAVING:  490348 FREE B
+0*** ASSEMBLY TIME =    0.000 SECS,    35000 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+0BEGIN XSNAP - CALL     1 AT E0000010 USER REGISTERS
+0 REGS 0-7      F4F4F4F4    00000019    0000000C    F4F4F4F4    F4F4F4F4    F4F4
+  REGS 8-15     F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    0000
+0
+0BEGIN XSNAP - CALL     2 AT E0000020 USER REGISTERS
+0 REGS 0-7      F4F4F4F4    0000003E    00000025    F4F4F4F4    F4F4F4F4    F4F4
+  REGS 8-15     F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    F4F4F4F4    0000
+0
+1BEGIN XSNAP - CALL     3 AT E000002A USER STORAGE
+0                             CORE ADDRESSES SPECIFIED-     000034 TO 00003C
+ 000020   5010F034 E060F034 000807FE 00000019    00000025 0000003E F5F5F5F5 0000
+0
+0*** EXECUTION TIME =    0.000 SECS.        11 INSTRUCTIONS EXECUTED -    11000
+0*** FIRST CARD NOT READ: NO CARDS READ:FILE UNOPENED
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

@@ -1,0 +1,95 @@
+//KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H                                00010000
+//STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'                                  00020002
+//STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        00030000
+//SYSIN DD *                                                            00040000
+*************************************************                       00050000
+*PROGRAMMER: CALEB UGENT                                                00060000
+*DATE 9/11/2016                                                         00070026
+*REGISTERS:                                                             00080000
+*************************************************                       00100000
+MAIN     CSECT                                                          00110014
+         USING MAIN,R15                                                 00120027
+         SR    R5,R5        ZERO OUT R5                                 00121033
+TOP      XREAD CARD,80      READ IN CARD                                00130033
+         BC    B'0100',EXIT         EXIT ON EOF                         00131033
+         PACK  NUMM(1),MONTH(2)     PACK NUMM WITH MONTH                00140099
+         PACK  NUMI(4),INRATE(6)   PACK NUMI WITH INRATE                00150099
+*        XDUMP NUMI,6                                                   00151083
+         AP    TOTAL(6),NUMI(4)    ADD PACK TOTAL AND NUMI              00160099
+         MVC   RENT(9),=XL9'20206B2020214B2020' FORMAT TO RENT          00170099
+         ED    RENT(9),NUMI      EDIT OUT TO RENT                       00180099
+         MVC   MONTHS(2),=XL1'2120' MOVE FORMAT TO MONTHS               00180199
+         ED    MONTHS(2),NUMM    EDIT OUT TO MONTHS                     00181099
+         ZAP   NUMD(6),NUMI(4)   MOVE NUM I TO BIGGER NUMBER            00182099
+         MP    NUMD(6),NUMM(1)   MULTIPLY                               00183099
+         MVC   TDUE(14),=XL14'2020206B2020206B2020214B2020' MOVE FORMAT 00184099
+         ED    TDUE(14),NUMD EDIT OUT TO TDUE                           00185099
+         XPRNT PLINE,50      PRINT OUT INFO                             00186099
+         B     TOP           BRANCH TO TOP                              00187033
+EXIT     BR    R14           EXIT                                       00188033
+*************************************************                       00190000
+*                    VARIABLES                                          00200013
+************************************************                        00210091
+HEADING  DC CL1' '                                                      00220017
+         DC CL25'              RENT REPORT'                             00230014
+HEADING2 DC CL1' '                                                      00231017
+         DC CL18'    MONTHS OVERDUE'                                    00232021
+         DC CL11'   AMOUNT'                                             00233022
+         DC CL13'   TOTAL DUE'                                          00234023
+CARD     DC 0CL80' '                                                    00235032
+MONTH    DC CL2'HI'                                                     00236028
+         DC CL3'AAA'                                                    00237028
+INRATE   DC CL6'RATE'                                                   00238028
+PADD     DC CL69'69'                                                    00239031
+*                                                                       00239185
+NUMM     DC PL1'0'                                                      00240099
+NUMI     DC PL4'0'                                                      00241099
+NUMD     DC PL6'0'                                                      00241185
+AVERAGE  DC PL6'0'                                                      00242027
+TOTAL    DC PL6'0'                                                      00243084
+*                                                                       00243185
+PLINE    DC CL1' '                                                      00244027
+RENT     DC CL9'TEST'                                                   00245099
+         DC CL6' FOR  '                                                 00246027
+MONTHS   DC CL2'1'                                                      00247090
+         DC CL13' MONTH(S),   '                                         00248027
+TDUE     DC CL14'TEST'                                                  00249099
+         DC CL5' DUE.'                                                  00249127
+*************************************************                       00250000
+*                    EQUATES                                            00260013
+*************************************************                       00270000
+R0     EQU 0                                                            00280005
+R1     EQU 1                                                            00290000
+R2     EQU 2                                                            00300000
+R3     EQU 3                                                            00310014
+R4     EQU 4                                                            00320014
+R5     EQU 5                                                            00330014
+R6     EQU 6                                                            00340014
+R7     EQU 7                                                            00350014
+R8     EQU 8                                                            00360014
+R9     EQU 9                                                            00370014
+R10    EQU 10                                                           00380014
+R11    EQU 11                                                           00390014
+R12    EQU 12                                                           00400014
+R13    EQU 13                                                           00410017
+R14    EQU 14                                                           00420000
+R15    EQU 15                                                           00430003
+       END                                                              00440000
+/*                                                                      00450000
+//FT05F001 DD *                                                         00460014
+07   050150                                                             00470099
+04   019000                                                             00480099
+07   118290                                                             00490099
+01   035099                                                             00500099
+05   020000                                                             00510099
+08   013100                                                             00520099
+02   050400                                                             00530099
+05   130000                                                             00540099
+09   014200                                                             00550099
+01   050550                                                             00560099
+01   041999                                                             00570099
+10   152600                                                             00571099
+12   016000                                                             00572099
+09   157100                                                             00573099
+08   111500                                                             00580099
+//SYSPRINT DD SYSOUT=*                                                  00590014

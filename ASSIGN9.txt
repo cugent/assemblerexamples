@@ -1,0 +1,327 @@
+//KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H                                00010000
+//STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'                                  00020002
+//STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR                        00030000
+//SYSIN DD *                                                            00040000
+*************************************************                       00050000
+*PROGRAMMER: CALEB UGENT                                                00060000
+*DATE 11/15/2016                                                        00070099
+*GOAL: BUILD TWO TABLES SORT THEM AND MERGE THEM                        00080099
+*************************************************                       00090000
+*                                                                       00100099
+*                                                                       00110099
+*                                                                       00120099
+*************************************************                       00130099
+TAB      DSECT                                                          00140099
+$SCORE   DS  F                                                          00150099
+$NAME    DS  CL28                                                       00160099
+*************************************************                       00170099
+*                                                                       00180099
+*                                                                       00190099
+*                                                                       00200099
+*************************************************                       00210099
+MAIN     CSECT                                                          00220014
+         STM   R14,R12,12(R13)    STORE REGISTERS                       00230099
+         LR    R12,R15            LOAD R12 WITH R15                     00240099
+         USING MAIN,R12                                                 00250099
+         LA    R14,MSAVE          POINT R14 AT MSAVE                    00260099
+         ST    R14,8(R13)         STORE FORWARD POINTER                 00270099
+         ST    R13,4(R14)         STORE BACKWARD POINTER                00280099
+         LR    R13,R14            LOAD R13 WITH R14                     00290099
+*                                                                       00300099
+         XREAD CARD,80                                                  00310099
+*                                                                       00320099
+         LA    R1,PLIST           POINT R1 AT PLIST1                    00330099
+         L     R15,=V(BUILD)      R15 AT BUILD                          00340099
+         BALR  R14,R15            CALL BUILD                            00350099
+         XDUMP TABLE,600                                                00360099
+*                                                                       00370099
+         LA    R1,PLIST2          POINT R1 AT PLIST2                    00380099
+         L     R15,=V(STAT)       POINT R15 AT STAT                     00390099
+         BALR  R14,R15            CALL STAT                             00400099
+*                                                                       00410099
+         LA    R1,PLIST3                                                00411099
+         L     R15,=V(GRAPHS)                                           00412099
+         BALR  R14,R15                                                  00413099
+*                                                                       00414099
+         L     R13,4(R13)         PREVIOUS SAVE AREA                    00420099
+         LM    R14,R12,12(R13)    LOAD REGISTERS                        00430099
+         BR    R14                EXIT                                  00440099
+***************************************************************         00450099
+*               MAIN STORAGE                                  *         00460099
+***************************************************************         00470099
+         LTORG                                                          00480099
+         ORG MAIN+((*-MAIN+31)/32*32)                                   00490099
+TABLE    DC 20CL32'ENTRY T1'                                            00500099
+PLIST    DC A(CARD,TABLE,EOT)                                           00510099
+PLIST2   DC A(TABLE,EOT)                                                00520099
+PLIST3   DC A(TABLE,EOT)                                                00521099
+EOT      DC F'10'                                                       00530099
+CARD     DC 20CL4'CARD'                                                 00540099
+MSAVE    DC 18F'-1'                                                     00550099
+*************************************************                       00560027
+*BUILD INTERNAL SUBROUTINE                                              00570027
+*************************************************                       00580000
+BUILD    CSECT                                                          00590099
+         STM   R14,R12,12(R13)   STORE CALLER REGISTERS                 00600099
+         LR    R12,R15           SET BASE REGISTER TO 12                00610099
+         USING BUILD,R12                                                00620099
+         LA    R14,BSAVE         POINT R14 AT BSAVE AREA                00630099
+         ST    R14,8(R13)        SET FORWARDS POINTER                   00640099
+         ST    R13,4(R14)        SET BACKWARDS POINTER                  00650099
+         LR    R13,R14           LOAD REGISTER 13 WITH 14               00660099
+         LM    R4,R6,0(R1)       CARD R4 TABLE R5 EOT 6                 00670099
+         USING TAB,R5                                                   00680099
+BTOP     XREAD 0(R4),80          READ IN DATA                           00690099
+         BC    B'0100',BDONE                                            00700099
+         MVC   $NAME(28),3(R4)    MOVE 32 CHAR TO FROM CARD             00710099
+         PACK  PGRADE(8),0(3,R4)                                        00720099
+         CVB   R3,PGRADE                                                00730099
+         ST    R3,$SCORE                                                00740099
+         LA    R5,32(R5)         ADVANCE TABLE POINTER 32               00750099
+         B     BTOP              BRANCH BACK TOP                        00760099
+BDONE    DS    0H                                                       00770099
+         DROP  R5                                                       00780099
+         ST    R5,0(R6)          ST R5 IN EOT                           00790099
+         L     R13,4(R13)        LOAD PREVIOUS REGISTERS ADDRESS        00800099
+         LM    R14,R12,12(R13)   RESTORE REGISTERS                      00810099
+         BR    R14               BRANCH TO MAIN                         00820099
+         LTORG                                                          00830099
+GRADE1   DC    CL3'TES'                                                 00840099
+DBWORD   DS    D                                                        00850099
+PGRADE   DC    PL8'2'                                                   00860099
+BSAVE    DC    18F'-1'                                                  00870099
+*************************************************                       00880050
+*                    STATS                                              00890099
+*************************************************                       00900050
+STAT     CSECT                                                          00910099
+         STM   R14,R12,12(R13)   STORE REGISTERS                        00920099
+         LR    R12,R15           LOAD REGISTER R12 WITH R15             00930099
+         USING STAT,R12                                                 00940099
+         XPRNT HEADING1,25                                              00950099
+         LA    R14,SSAVE         POINTER R14 AT PSAVE                   00960099
+         ST    R14,8(R13)        SET FORWARD POINTER                    00970099
+         ST    R13,4(R14)        SET BACKWARD POINTER                   00980099
+         LR    R13,R14           LOAD R13 WITH R14                      00990099
+         LM    R5,R6,0(R1)       R5 TABLE R6 EOT R7 NUMLINES            01000099
+         L     R6,0(R6)          LOAD CONTENTS OF R6 WITH R6            01010099
+         USING TAB,R5            USE TAB                                01020099
+STATL    DS    0H                                                       01030099
+         CR    R5,R6             COMPARE TABLE TO EOT                   01040099
+         BE    EXIT              EQUAL EXIT                             01050099
+         L     R3,$SCORE         LOAD SCORE IN                          01060099
+         MVC   NAME1(28),$NAME   MOVE IN NAME                           01070099
+         CVD   R3,PGRADE3                  CONVERT R3 TO PACKED         01080099
+         ZAP   PGRADE4(2),PGRADE3(8)       MAKE IT SMALLER              01090099
+         AP    PGRADET(6),PGRADE4(2)       ADD TOTAL                    01100099
+         MVC   GRADES(3),=XL3'202021'      MOVE GRADE OVER              01110099
+         ED    GRADES(3),PGRADE4           EDIT IT OUT                  01120099
+         LA    R5,32(R5)                   ADVANCE TABLE POINTER        01130099
+         AP    COUNTP(2),ONEP(1)           ADD TO COUNTER               01140099
+         XPRNT PLINE,36                    PRINT OUT LINE               01150099
+         B     STATL                       RETURN TO TOP                01160099
+*                                                                       01170099
+EXIT     DS    0H                                                       01180050
+         MP    PGRADET(6),HUNDRED(2)                                    01190099
+         DP    PGRADET(6),COUNTP(2)        DIVIDE TOTAL BY COUNT        01200099
+         MVC   AVG(7),=XL7'402020204B2021'   EDIT LINE                  01210099
+         ED    AVG(7),PGRADET             EDIT IT OUT                   01220099
+         XPRNT PLINE2,40                   PRINT THE AVG                01230099
+         DROP  R5                          STOP TAB                     01240099
+         L     R13,4(R13)         LOAD PREVIOUS SAVE AREA               01250099
+         LM    R14,R12,12(R13)    LOAD PREVIOUS REGISTERS               01260099
+         BR    R14                RETURN TO MAIN                        01270099
+         LTORG                                                          01280099
+SSAVE    DC 18F'-1'                                                     01290099
+HEADING1 DC CL25'           TEST STATISTIC'                             01300099
+PLINE2   DC CL1' '                                                      01310099
+         DC CL32'AVERAGE:                       '                       01320099
+AVG      DC CL7'TES'                                                    01330099
+PLINE    DC CL1' '                                                      01340099
+NAME1    DC CL28'TEST'                                                  01350099
+         DC CL4'    '                                                   01360099
+GRADES   DC CL3'  '                                                     01370099
+DBWORD2  DS D                                                           01380099
+PGRADE3  DC PL8'1'                                                      01390099
+PGRADE4  DC PL2'1'                                                      01400099
+PGRADET  DC PL6'0'                                                      01410099
+ONEP     DC PL1'1'                                                      01420099
+COUNTP   DC PL2'0'                                                      01430099
+HUNDRED  DC PL2'100'                                                    01440099
+PGRADEB  DC PL6'0'                                                      01450099
+*************************************************                       01460099
+* GRAPH                                                                 01470099
+* R7 A                                                                  01480099
+* R8 B                                                                  01490099
+* R9 C                                                                  01500099
+* R10 D                                                                 01510099
+* R11 F                                                                 01520099
+*************************************************                       01530069
+GRAPHS   CSECT                                                          01540099
+         STM   R14,R12,12(R13)     STORE REGISTERS                      01550099
+         LR    R12,R15             LOAD R12 AS BASE REGISTER            01560099
+         USING GRAPHS,R12                                               01570099
+         LA    R14,GSAVE           POINT R14 AT SSAVE                   01580099
+         ST    R14,8(R13)          LOAD FORWARD POINTER                 01590099
+         ST    R13,4(R14)          LOAD BACKWARD POINTER                01600099
+         LR    R13,R14             LOAD REGISTER R13 WITH R14           01610099
+         LM    R5,R6,0(R1)         R5 TABLE R6 EOT                      01620099
+         L     R6,0(R6)            LOAD R6 WITH R6                      01630099
+         SR    R7,R7               ZERO OUT R7                          01640099
+         SR    R8,R8               ZERO OUT R8                          01650099
+         SR    R9,R9               ZERO OUT R9                          01660099
+         SR    R10,R10             ZERO OUT R10                         01670099
+         SR    R11,R11             ZERO OUT R11                         01680099
+         LA    R4,STARS            LOAD R4 WITH STARS                   01690099
+         LA    R2,GRAPH2           LOAD R2 WITH GRAPH2                  01700099
+         USING TAB,R5              USE TAB                              01710099
+GTOP     DS    0H                                                       01720099
+         CR    R5,R6               COMPARE EOT                          01730099
+         BE    EXITG               EXIT ON EOT                          01740099
+         L     R3,$SCORE            LOAD IN SCORE                       01750099
+         LA    R5,32(R5)           ADVANCE TABLE POINTER                01751099
+         C     R3,NIN2             COMPARE FOR A                        01760099
+         BH    AGRADE              BRANCH ON HIGH TO A                  01770099
+         C     R3,EIGHT3           COMPARE FOR B                        01780099
+         BH    BGRADE              BRANCH ON HIGH TO B                  01790099
+         C     R3,SEVEN5           COMPARE FOR C                        01800099
+         BH    CGRADE              BRANCH ON HIGH FOR C                 01810099
+         C     R3,SIX7             COMPARE FOR D                        01820099
+         BH    DGRADE              BRANCH ON HIGH FOR D                 01830099
+         LA    R11,1(R11)          ADD ONE TO R11                       01840099
+         B     GTOP                BRANCH TOP                           01850099
+AGRADE   DS    0H                                                       01860099
+         LA    R7,1(R7)            ADD ONE TO R7                        01870099
+         B     GTOP                BRANCH TOP                           01880099
+BGRADE   DS    0H                                                       01890099
+         LA    R8,1(R8)            ADD ONE TO R8                        01900099
+         B     GTOP                BRANCH TOP                           01910099
+CGRADE   DS    0H                                                       01920099
+         LA    R9,1(R9)            ADD ONE TO R9                        01930099
+         B     GTOP                BRANCH TOP                           01940099
+DGRADE   DS    0H                                                       01950099
+         LA    R10,1(R10)          ADD ONE TO R10                       01960099
+         B     GTOP                BRANCH TOP                           01970099
+EXITG    DS    0H                                                       01980099
+*F PRINT                                                                01991099
+         CVD   R11,PAMOUNT         CONVERT R11 TO DECIMAL               01992099
+         ZAP   PNUMBER(2),PAMOUNT(8)    ZAP TO SMALLER                  01993099
+         MVC   NUM(2),=XL3'202020'      MOVE CHAR                       01994099
+         ED    NUM(2),PNUMBER           EDIT OUT                        01995099
+         MVC   LABEL(6),FRANGE      MOVE OVER LABEL                     02000099
+         BCTR  R11,R0              COUNT DOWN                           02010099
+         EX    R11,MOVEIT          EXECUTE MOVE IT                      02020099
+         XPRNT GRAPH,32            PRINT GRAPH                          02030099
+         MVI   GRAPH2,C' '         CLEAR OUT                            02040099
+         MVC   GRAPH2(8),GRAPH     GRAPH                                02050099
+*                                                                       02060099
+         CVD   R10,PAMOUNT             CONVERT R10 TO DECIMAL           02061099
+         ZAP   PNUMBER(2),PAMOUNT(8)   ZAP TO SMALLER NUMBER            02062099
+         MVC   NUM(2),=XL3'202020'     CHARACTER TO NUM                 02063099
+         ED    NUM(2),PNUMBER           EDIT OUT                        02064099
+         MVC   LABEL(6),DRANGE         MOVE LABEL                       02070099
+         BCTR  R10,R0                  COUNT TO 0                       02080099
+         EX    R10,MOVEIT              EXECUTE                          02090099
+         XPRNT GRAPH,32                PRINT GRAPH                      02100099
+         MVI   GRAPH2,C' '             CLEAR OUT                        02110099
+         MVC   GRAPH2(8),GRAPH2        GRAPH                            02120099
+*                                                                       02130099
+         CVD   R9,PAMOUNT              CONVERT R9 TO DECIMAL            02131099
+         ZAP   PNUMBER(2),PAMOUNT(8)   ZAP TO SMALLER NUMBER            02132099
+         MVC   NUM(2),=XL3'202020'     EDIT PATTERN                     02133099
+         ED    NUM(2),PNUMBER          EDIT OUT                         02134099
+         MVC   LABEL(6),CRANGE         MOVE LABEL                       02140099
+         BCTR  R9,R0                   COUNT TO 0                       02150099
+         EX    R9,MOVEIT               EXECUTE MOVE IT                  02160099
+         XPRNT GRAPH,32                PRINT GRAPH                      02170099
+         MVI   GRAPH2,C' '             CLEAR OUT                        02180099
+         MVC   GRAPH2(8),GRAPH2        GRAPH                            02190099
+*                                                                       02200099
+         CVD   R8,PAMOUNT              CONVERT DECIMAL R8               02200199
+         ZAP   PNUMBER(2),PAMOUNT(8)   ZAP TO SMALLER NUMBER            02200299
+         MVC   NUM(2),=XL3'202020'     MOVE PATTERN                     02200399
+         ED    NUM(2),PNUMBER          EDIT OUT                         02200499
+         MVC   LABEL(6),BRANGE         MOVE LABEL                       02201099
+         BCTR  R8,R0                   COUNT TO ZERO                    02202099
+         EX    R8,MOVEIT               EXECUTE R8                       02203099
+         XPRNT GRAPH,32                PRINT GRAPH                      02204099
+         MVI   GRAPH2,C' '             CLEAR OUT                        02205099
+         MVC   GRAPH2(8),GRAPH2        GRAPH                            02206099
+*                                                                       02207099
+         CVD   R7,PAMOUNT              CONVERT DECIMAL                  02207199
+         ZAP   PNUMBER(2),PAMOUNT(8)   ZAP TO SMALL NUMBER              02207299
+         MVC   NUM(2),=XL3'202020'     EDIT PATTERN                     02207399
+         ED    NUM(2),PNUMBER          EDIT OUT                         02207499
+         MVC   LABEL(6),ARANGE         MOVE LABEL                       02208099
+         BCTR  R7,R0                   COUNT TO ZERO                    02209099
+         EX    R7,MOVEIT               EXECUTE MOVEIT                   02209199
+         XPRNT GRAPH,32                PRINT GRAPH                      02209299
+         MVI   GRAPH2,C' '             CLEAR OUT GRAPH2                 02209399
+         MVC   GRAPH2(8),GRAPH2        CLEAR IT                         02209499
+*                                                                       02209599
+         DROP  R5                  DROP TAB                             02210099
+         L     R13,4(R13)          LOAD PREVIOUS SAVE AREA              02220099
+         LM    R14,R12,12(R13)     LOAD REGISTERS                       02230099
+         BR    R14                 BRANCH R9                            02240099
+         LTORG                                                          02250099
+MOVEIT   MVC   0(0,R2),0(R4)                                            02260099
+GRAPH    DC  CL1' '                                                     02270099
+LABEL    DC  CL6'     '                                                 02280099
+         DC  CL5'     '                                                 02290099
+NUM      DC  CL3'  '                                                    02300099
+         DC  CL1' '                                                     02310099
+GRAPH2   DC  CL8'       '                                               02320099
+STARS    DC  CL8'********'                                              02330099
+GSAVE    DC  18F'-1'                                                    02340099
+HUND     DC  F'100'                                                     02350099
+NIN2     DC  F'92'                                                      02360099
+EIGHT3   DC  F'83'                                                      02370099
+SEVEN5   DC  F'75'                                                      02380099
+SIX7     DC  F'67'                                                      02390099
+ARANGE   DC  CL6'92-100'                                                02400099
+BRANGE   DC  CL6'84-91 '                                                02410099
+CRANGE   DC  CL6'76-83 '                                                02420099
+DRANGE   DC  CL6'68-75 '                                                02430099
+FRANGE   DC  CL6'0-67  '                                                02440099
+DWORD4   DS  D                                                          02441099
+PAMOUNT  DC  PL8'0'                                                     02442099
+PNUMBER  DC  PL1'0'                                                     02443099
+*************************************************                       02450000
+*                    EQUATES                    *                       02460099
+*************************************************                       02470000
+R0     EQU 0                                                            02480005
+R1     EQU 1                                                            02490000
+R2     EQU 2                                                            02500000
+R3     EQU 3                                                            02510014
+R4     EQU 4                                                            02520014
+R5     EQU 5                                                            02530014
+R6     EQU 6                                                            02540014
+R7     EQU 7                                                            02550014
+R8     EQU 8                                                            02560014
+R9     EQU 9                                                            02570014
+R10    EQU 10                                                           02580014
+R11    EQU 11                                                           02590014
+R12    EQU 12                                                           02600014
+R13    EQU 13                                                           02610017
+R14    EQU 14                                                           02620000
+R15    EQU 15                                                           02630003
+       END                                                              02640000
+/*                                                                      02650000
+//FT05F001 DD *                                                         02660014
+Y   Y                                                                   02670099
+099JOHNSON, JOE                                                         02680099
+063ANITA BATH                                                           02690099
+079DREW P. DRAWERS                                                      02700099
+098IMA HOGG                                                             02710099
+012KURT ANSWER                                                          02720099
+088ANN HONOUR                                                           02730099
+083IVANNA TINKLE                                                        02740099
+078BEA TIDY                                                             02750099
+066SAM FREELY                                                           02760099
+088JIM SHORTS                                                           02770099
+076DANE KNIGHT                                                          02780099
+077U. C. FOREVER                                                        02790099
+100DOUG A. HOLE                                                         02800099
+092MARY WAY                                                             02810099
+055ZELMO, BOBBY                                                         02820099
+/*                                                                      02830014
+//SYSPRINT DD SYSOUT=*                                                  02840014

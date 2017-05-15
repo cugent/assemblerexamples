@@ -1,0 +1,473 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 23.03.37 JOB06049 ---- SUNDAY,    04 DEC 2016 ----
+ 23.03.37 JOB06049  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 23.03.37 JOB06049  ICH70001I KC03R0F  LAST ACCESS AT 23:02:57 ON SUNDAY, DECEMB
+ 23.03.37 JOB06049  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 23.03.37 JOB06049  -                                         --TIMINGS (MINS.)-
+ 23.03.37 JOB06049  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 23.03.37 JOB06049  -KC03R0FA                      00     55 ******    .00     .
+ 23.03.37 JOB06049  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 23.03.37 JOB06049  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  04 DEC 2016 JOB EXECUTION DATE
+-          342 CARDS READ
+-          473 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-           51 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //FT05F001 DD *
+         6 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 23:02:57 ON SUNDAY, DECEMBER 4, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO FT05F001
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB06049.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB06049.D0000102.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB06049.D0000103.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016339.2303
+ IEF032I STEP/STEP1   /STOP  2016339.2303
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   268K  EXT:        0K  SYS:    11460K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016339.2303
+ IEF033I  JOB/KC03R0FA/STOP  2016339.2303
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *             MACRO
+                                       3 ***************************************
+                                       4          MACRO
+                                       5 &LABEL   MYSAVE &BREG,&MYSAVE
+                                       6 &LABEL   STM   R14,&BREG,12(R13)
+                                       7          LR    &BREG,R15
+                                       8          LA    R14,&MYSAVE
+                                       9          B     O&SYSNDX
+                                      10 &MYSAVE  DC    18F'-1'
+                                      11 O&SYSNDX ST    R14,8(R13)
+                                      12          ST    R13,4(R14)
+                                      13          LR    R13,R14
+                                      14          MEND
+                                      15 ***************************************
+                                      16 *PROGRAMMER: CALEB UGENT
+                                      17 *DATE 11/15/2016
+                                      18 *GOAL: BUILD TWO TABLES SORT THEM AND M
+                                      19 ***************************************
+ 000000                               20 MAIN     CSECT
+ 000000                               21          USING MAIN,R12
+                                      22 M        MYSAVE R12,MSAVE
+ 000000 90EC D00C            0000C    23+M        STM   R14,R12,12(R13)
+ 000004 18CF                          24+         LR    R12,R15
+ 000006 41E0 C010            00010    25+         LA    R14,MSAVE
+ 00000A 47F0 C058            00058    26+         B     O0001
+ 000010 FFFFFFFFFFFFFFFF              27+MSAVE    DC    18F'-1'
+ 000058 50ED 0008            00008    28+O0001    ST    R14,8(R13)
+ 00005C 50DE 0004            00004    29+         ST    R13,4(R14)
+ 000060 18DE                          30+         LR    R13,R14
+ 000062 1BBB                          31          SR    R11,R11            ZERO
+ 000064 41BB 0002            00002    32          LA    R11,2(R11)         ADD 2
+ 000068 50B0 CB70            00B70    33          ST    R11,LINENUM        STORE
+                                      34 *
+ 00006C 4110 C100            00100    35          LA    R1,PLIST1          POINT
+ 000070 58F0 C0F0            000F0    36          L     R15,=V(BUILD)      R15 A
+ 000074 05EF                          37          BALR  R14,R15            CALL
+ 000076 E060 C164 0258 00164          38          XDUMP TABLE1,600
+                                      39 *
+ 00007C 4110 C118            00118    40          LA    R1,PLIST3          POINT
+ 000080 58F0 C0F4            000F4    41          L     R15,=V(SORT)       R15 A
+ 000084 05EF                          42          BALR  R14,R15            CALL
+                                      43 *
+ 000086 4110 C14C            0014C    44          LA    R1,PLIST7          POINT
+ 00008A 58F0 C0F8            000F8    45          L     R15,=V(PRINT)      R15 A
+ 00008E E020 CBC4 0020 00BC4          46          XPRNT HEADING,32         PRINT
+ 000094 05EF                          47          BALR  R14,R15            CALL
+                                      48 *
+ 000096 41BB 0001            00001    49          LA    R11,1(R11)         ADD 1
+ 00009A 50B0 CB70            00B70    50          ST    R11,LINENUM        STORE
+                                      51 *
+ 00009E 4110 C10C            0010C    52          LA    R1,PLIST2          POINT
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 0000A2 58F0 C0F0            000F0    53          L     R15,=V(BUILD)      LOAD
+ 0000A6 05EF                          54          BALR  R14,R15            CALL
+ 0000A8 E060 C3E4 0258 003E4          55          XDUMP TABLE2,600
+                                      56 *
+ 0000AE 4110 C120            00120    57          LA    R1,PLIST4          POINT
+ 0000B2 58F0 C0F4            000F4    58          L     R15,=V(SORT)       LOAD
+ 0000B6 05EF                          59          BALR  R14,R15            CALL
+                                      60 *
+ 0000B8 4110 C158            00158    61          LA    R1,PLIST8          POINT
+ 0000BC 58F0 C0F8            000F8    62          L     R15,=V(PRINT)      LOARD
+ 0000C0 E020 CBE4 0020 00BE4          63          XPRNT HEADING2,32        PRINT
+ 0000C6 05EF                          64          BALR  R14,R15            CALL
+                                      65 *
+ 0000C8 4110 C128            00128    66          LA    R1,PLIST5          POINT
+ 0000CC 58F0 C0FC            000FC    67          L     R15,=V(MERGE)      LOAD
+ 0000D0 05EF                          68          BALR  R14,R15            CALL
+                                      69 *
+ 0000D2 4110 C140            00140    70          LA    R1,PLIST6          LOAD
+ 0000D6 58F0 C0F8            000F8    71          L     R15,=V(PRINT)      LOAD
+ 0000DA E020 CBE4 0020 00BE4          72          XPRNT HEADING2,32         PRIN
+ 0000E0 05EF                          73          BALR  R14,R15            CALL
+                                      74 *
+ 0000E2 58DD 0004            00004    75          L     R13,4(R13)         PREVI
+ 0000E6 98EC D00C            0000C    76          LM    R14,R12,12(R13)    LOAD
+ 0000EA 07FE                          77          BR    R14                EXIT
+                                      78 ***************************************
+                                      79 *               MAIN STORAGE
+                                      80 ***************************************
+                                      81          LTORG
+ 0000F0 00000C08                      82                =V(BUILD)
+ 0000F4 00000DE0                      83                =V(SORT)
+ 0000F8 00000C98                      84                =V(PRINT)
+ 0000FC 00000F38                      85                =V(MERGE)
+ 000100                               86          ORG MAIN+((*-MAIN+31)/32*32)
+ 000100 00000B7400000164              87 PLIST1   DC A(CARD,TABLE1,EOT1)
+ 00010C 00000B74000003E4              88 PLIST2   DC A(CARD,TABLE2,EOT2)
+ 000118 0000016400000B64              89 PLIST3   DC A(TABLE1,EOT1)
+ 000120 000003E400000B68              90 PLIST4   DC A(TABLE2,EOT2)
+ 000128 000003E400000664              91 PLIST5   DC A(TABLE2,TABLE3,EOT1,EOT2,E
+ 000140 0000066400000B6C              92 PLIST6   DC A(TABLE3,EOT3,LINENUM)
+ 00014C 0000016400000B64              93 PLIST7   DC A(TABLE1,EOT1,LINENUM)
+ 000158 000003E400000B68              94 PLIST8   DC A(TABLE2,EOT2,LINENUM)
+ 000164 C5D5E3D9E840E3F1              95 TABLE1   DC 20CL32'ENTRY T1'
+ 0003E4 C5D5E3D9E840E3F2              96 TABLE2   DC 20CL32'ENTRY T2'
+ 000664 C5D5E3D9E840E3F3              97 TABLE3   DC 40CL32'ENTRY T3'
+ 000B64 0000000A                      98 EOT1     DC F'10'
+ 000B68 00000014                      99 EOT2     DC F'20'
+ 000B6C 0000001E                     100 EOT3     DC F'30'
+ 000B70 00000003                     101 LINENUM  DC F'3'
+ 000B74 C3C1D9C4C3C1D9C4             102 CARD     DC 20CL4'CARD'
+ 000BC4 40                           103 HEADING  DC CL1' '
+ 000BC5 D7D9C9D5E3C9D5C7             104          DC CL31'PRINTING TABLE NAMES P
+ 000BE4 40                           105 HEADING2 DC CL1' '
+ 000BE5 D7D9C9D5E3C9D5C7             106          DC CL31'PRINTING TABLE NAMES P
+                                     107 ***************************************
+                                     108 *BUILD INTERNAL SUBROUTINE
+                                     109 ***************************************
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000C08                              110 BUILD    CSECT
+ 000C08                              111          USING BUILD,R12
+                                     112 B        MYSAVE R12,BSAVE
+ 000C08 90EC D00C            0000C   113+B        STM   R14,R12,12(R13)
+ 000C0C 18CF                         114+         LR    R12,R15
+ 000C0E 41E0 C010            00C18   115+         LA    R14,BSAVE
+ 000C12 47F0 C058            00C60   116+         B     O0002
+ 000C18 FFFFFFFFFFFFFFFF             117+BSAVE    DC    18F'-1'
+ 000C60 50ED 0008            00008   118+O0002    ST    R14,8(R13)
+ 000C64 50DE 0004            00004   119+         ST    R13,4(R14)
+ 000C68 18DE                         120+         LR    R13,R14
+ 000C6A 9846 1000            00000   121          LM    R4,R6,0(R1)       CARD R
+ 000C6E E004 0000 0050 00000         122 BTOP     XREAD 0(R4),80          READ I
+ 000C74 957C 4000      00000         123          CLI   0(R4),C'@'        COMPAR
+ 000C78 4780 C082            00C8A   124          BE    BDONE             IF EQU
+ 000C7C D21F 5000 4000 00000 00000   125          MVC   0(32,R5),0(R4)    MOVE 3
+ 000C82 4155 0020            00020   126          LA    R5,32(R5)         ADVANC
+ 000C86 47F0 C066            00C6E   127          B     BTOP              BRANCH
+ 000C8A                              128 BDONE    DS    0H
+ 000C8A 5056 0000            00000   129          ST    R5,0(R6)          ST R5
+ 000C8E 58DD 0004            00004   130          L     R13,4(R13)        LOAD P
+ 000C92 98EC D00C            0000C   131          LM    R14,R12,12(R13)   RESTOR
+ 000C96 07FE                         132          BR    R14               BRANCH
+                                     133 ***************************************
+                                     134 *                    PRINT
+                                     135 ***************************************
+ 000C98                              136 PRINT    CSECT
+ 000C98                              137          USING PRINT,R12
+                                     138 P        MYSAVE R12,PSAVE
+ 000C98 90EC D00C            0000C   139+P        STM   R14,R12,12(R13)
+ 000C9C 18CF                         140+         LR    R12,R15
+ 000C9E 41E0 C010            00CA8   141+         LA    R14,PSAVE
+ 000CA2 47F0 C058            00CF0   142+         B     O0003
+ 000CA8 FFFFFFFFFFFFFFFF             143+PSAVE    DC    18F'-1'
+ 000CF0 50ED 0008            00008   144+O0003    ST    R14,8(R13)
+ 000CF4 50DE 0004            00004   145+         ST    R13,4(R14)
+ 000CF8 18DE                         146+         LR    R13,R14
+ 000CFA 9857 1000            00000   147          LM    R5,R7,0(R1)       R5 TAB
+ 000CFE 5866 0000            00000   148          L     R6,0(R6)          LOAD R
+ 000D02 5877 0000            00000   149          L     R7,0(R7)          LOAD R
+ 000D06 41A0 C0C1            00D59   150          LA    R10,PLINE+1        LOAD
+ 000D0A 1B44                         151          SR    R4,R4              ZERO
+                                     152 *
+ 000D0C                              153 EPTOP    DS    0H
+ 000D0C 1956                         154          CR    R5,R6               COMP
+ 000D0E 47A0 C096            00D2E   155          BC    B'1010',PRINTE     BRANC
+ 000D12 1947                         156          CR    R4,R7              COMPA
+ 000D14 4780 C096            00D2E   157          BE    PRINTE             BRANC
+ 000D18 D21F A000 5000 00000 00000   158          MVC   0(32,R10),0(R5)    MOVE
+ 000D1E 41AA 0020            00020   159          LA    R10,32(R10)        ADVAN
+ 000D22 4155 0020            00020   160          LA    R5,32(R5)          ADVAN
+ 000D26 4144 0001            00001   161          LA    R4,1(R4)           ADD O
+ 000D2A 47F0 C074            00D0C   162          B     EPTOP              BRANC
+                                     163 *
+ 000D2E                              164 PRINTE   DS    0H
+ 000D2E E020 C0C0 0084 00D58         165          XPRNT PLINE,132          PRINT
+ 000D34 9240 C0C1      00D59         166          MVI   PLINE+1,C' '       CLEAR
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000D38 D282 C0C1 C0C0 00D59 00D58   167          MVC   PLINE+1(131),PLINE PUSH
+ 000D3E 41A0 C0C1            00D59   168          LA    R10,PLINE+1        RESET
+ 000D42 1956                         169          CR    R5,R6              CHECK
+ 000D44 47A0 C0B6            00D4E   170          BC    B'1010',EXIT       EXIT
+ 000D48 1B44                         171          SR    R4,R4              ZERO
+ 000D4A 47F0 C074            00D0C   172          B     EPTOP              BRANC
+                                     173 *
+ 000D4E                              174 EXIT     DS    0H
+ 000D4E 58DD 0004            00004   175          L     R13,4(R13)         LOAD
+ 000D52 98EC D00C            0000C   176          LM    R14,R12,12(R13)    LOAD
+ 000D56 07FE                         177          BR    R14                RETUR
+                                     178          LTORG
+ 000D58 40                           179 PLINE    DC CL1' '
+ 000D59 E3C5E2E340404040             180          DC CL131'TEST'
+                                     181 ***************************************
+                                     182 *                    SORT
+                                     183 * R5 = BEGIN OF TABLE
+                                     184 * R6 = END OF TABLE
+                                     185 * R2 = LOW
+                                     186 * R7 = I
+                                     187 * R3 = POINTER TO TEMP1
+                                     188 * R4 = POINTER TO TEMP2
+                                     189 * R8 = POINTER TO TEMP3
+                                     190 * R10= POINTER TO TEMP4
+                                     191 ***************************************
+ 000DE0                              192 SORT     CSECT
+ 000DE0                              193          USING SORT,R12
+                                     194 S        MYSAVE R12,SSAVE
+ 000DE0 90EC D00C            0000C   195+S        STM   R14,R12,12(R13)
+ 000DE4 18CF                         196+         LR    R12,R15
+ 000DE6 41E0 C010            00DF0   197+         LA    R14,SSAVE
+ 000DEA 47F0 C058            00E38   198+         B     O0004
+ 000DF0 FFFFFFFFFFFFFFFF             199+SSAVE    DC    18F'-1'
+ 000E38 50ED 0008            00008   200+O0004    ST    R14,8(R13)
+ 000E3C 50DE 0004            00004   201+         ST    R13,4(R14)
+ 000E40 18DE                         202+         LR    R13,R14
+ 000E42 9856 1000            00000   203          LM    R5,R6,0(R1)         LOAD
+ 000E46 5866 0000            00000   204          L     R6,0(R6)            LOAD
+ 000E4A 4130 C0D8            00EB8   205          LA    R3,TEMP1            LOAD
+ 000E4E 4140 C0F8            00ED8   206          LA    R4,TEMP2            LOAD
+ 000E52 4180 C118            00EF8   207          LA    R8,TEMP3            LOAD
+ 000E56 41A0 C138            00F18   208          LA    R10,TEMP4           LOAD
+                                     209 *
+ 000E5A                              210 STOP     DS    0H
+ 000E5A 1956                         211          CR    R5,R6               COMP
+ 000E5C 47A0 C0CC            00EAC   212          BC    B'1010',EXITS       IF A
+ 000E60 1825                         213          LR    R2,R5               LOAD
+ 000E62 4175 0020            00020   214          LA    R7,32(R5)           LOAD
+                                     215 *
+ 000E66                              216 MSLOOP   DS    0H
+ 000E66 1976                         217          CR    R7,R6               COMP
+ 000E68 47B0 C0AC            00E8C   218          BNL   EMTLOOP             BRAN
+ 000E6C D21F 3000 2000 00000 00000   219          MVC   0(32,R3),0(R2)
+ 000E72 D21F 4000 7000 00000 00000   220          MVC   0(32,R4),0(R7)
+ 000E78 D51F C0D8 C0F8 00EB8 00ED8   221          CLC   TEMP1,TEMP2         COMP
+ 000E7E 4740 C0A4            00E84   222          BL    NLOW                BRAN
+ 000E82 1827                         223          LR    R2,R7               LOAD
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                     224 *
+ 000E84                              225 NLOW     DS    0H
+ 000E84 4177 0020            00020   226          LA    R7,32(R7)           ADVA
+ 000E88 47F0 C086            00E66   227          B     MSLOOP              GO T
+                                     228 *
+ 000E8C                              229 EMTLOOP  DS    0H
+ 000E8C D21F 8000 5000 00000 00000   230          MVC   0(32,R8),0(R5)      LOAD
+ 000E92 D21F A000 2000 00000 00000   231          MVC   0(32,R10),0(R2)     LOAD
+ 000E98 D21F 5000 C138 00000 00F18   232          MVC   0(32,R5),TEMP4      STOR
+ 000E9E D21F 2000 C118 00000 00EF8   233          MVC   0(32,R2),TEMP3      STOR
+ 000EA4 4155 0020            00020   234          LA    R5,32(R5)           ADVA
+ 000EA8 47F0 C07A            00E5A   235          B     STOP                GO T
+                                     236 *
+ 000EAC                              237 EXITS    DS    0H
+ 000EAC 58DD 0004            00004   238          L     R13,4(R13)          LOAD
+ 000EB0 98EC D00C            0000C   239          LM    R14,R12,12(R13)     LOAD
+ 000EB4 07FE                         240          BR    R14                 BRAN
+                                     241          LTORG
+ 000EB8 E3C5E2E340404040             242 TEMP1    DC CL32'TEST'
+ 000ED8 E3C5E2E340404040             243 TEMP2    DC CL32'TEST'
+ 000EF8 E3C5E2E340404040             244 TEMP3    DC CL32'TEST'
+ 000F18 E3C5E2E340404040             245 TEMP4    DC CL32'TEST'
+                                     246 ***************************************
+                                     247 *     MERGE SUBROUTINE
+                                     248 *     R7  START OF TABLE 1
+                                     249 *     R2  START OF TABLE 2
+                                     250 *     R3  START OF MERGED TABLE
+                                     251 *     R4  EOT1
+                                     252 *     R5  EOT2
+                                     253 *     R6  ADDRESS OF EOT3
+                                     254 *
+                                     255 *
+                                     256 *
+                                     257 *
+                                     258 ***************************************
+ 000F38                              259 MERGE    CSECT
+ 000F38                              260          USING MERGE,R12
+                                     261 ME       MYSAVE R12,MESAVE
+ 000F38 90EC D00C            0000C   262+ME       STM   R14,R12,12(R13)
+ 000F3C 18CF                         263+         LR    R12,R15
+ 000F3E 41E0 C010            00F48   264+         LA    R14,MESAVE
+ 000F42 47F0 C058            00F90   265+         B     O0005
+ 000F48 FFFFFFFFFFFFFFFF             266+MESAVE   DC    18F'-1'
+ 000F90 50ED 0008            00008   267+O0005    ST    R14,8(R13)
+ 000F94 50DE 0004            00004   268+         ST    R13,4(R14)
+ 000F98 18DE                         269+         LR    R13,R14
+ 000F9A 9827 1000            00000   270          LM    R2,R7,0(R1)         HOW
+ 000F9E 5844 0000            00000   271          L     R4,0(R4)
+ 000FA2 5855 0000            00000   272          L     R5,0(R5)
+ 000FA6 4180 C118            01050   273          LA    R8,TEMP5            LOAD
+ 000FAA 4190 C138            01070   274          LA    R9,TEMP6            LOAD
+                                     275 *
+ 000FAE                              276 DO1      DS    0H
+ 000FAE 1974                         277          CR    R7,R4               COMP
+ 000FB0 4780 C0D8            01010   278          BE    ENDO1               BRAN
+ 000FB4 1925                         279          CR    R2,R5               COMP
+ 000FB6 4780 C0D8            01010   280          BE    ENDO1               BRAN
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                     281 *
+ 000FBA D21F C118 7000 01050 00000   282          MVC   TEMP5(32),0(R7)      MOV
+ 000FC0 D21F C138 2000 01070 00000   283          MVC   TEMP6(32),0(R2)      MOV
+ 000FC6 D51F C118 C138 01050 01070   284          CLC   TEMP5,TEMP6         COMP
+ 000FCC 47B0 C0A6            00FDE   285          BNL   ELSE1               BRAN
+ 000FD0 D21F 3000 C118 00000 01050   286          MVC   0(32,R3),TEMP5      MOVE
+ 000FD6 4177 0020            00020   287          LA    R7,32(R7)           ADVA
+ 000FDA 47F0 C0D0            01008   288          B     ENDIF               BRAN
+                                     289 *
+ 000FDE                              290 ELSE1    DS    0H
+ 000FDE D51F C118 C138 01050 01070   291          CLC   TEMP5,TEMP6         COMP
+ 000FE4 4780 C0BE            00FF6   292          BE    ELSE2               BRAN
+ 000FE8 D21F 3000 C138 00000 01070   293          MVC   0(32,R3),TEMP6      MOVE
+ 000FEE 4122 0020            00020   294          LA    R2,32(R2)           ADVA
+ 000FF2 47F0 C0D0            01008   295          B     ENDIF               BRAN
+                                     296 *
+ 000FF6                              297 ELSE2    DS    0H
+ 000FF6 D21F 3000 C118 00000 01050   298          MVC   0(32,R3),TEMP5      MOVE
+ 000FFC 4177 0020            00020   299          LA    R7,32(R7)           ADVA
+ 001000 4122 0020            00020   300          LA    R2,32(R2)           ADVA
+ 001004 47F0 C0D0            01008   301          B     ENDIF               BRAN
+                                     302 *
+ 001008                              303 ENDIF    DS    0H
+ 001008 4133 0020            00020   304          LA    R3,32(R3)           ADVA
+ 00100C 47F0 C076            00FAE   305          B     DO1                 BRAN
+                                     306 *
+ 001010                              307 ENDO1    DS    0H
+                                     308 *
+ 001010                              309 DO2      DS    0H
+ 001010 1974                         310          CR    R7,R4               COMP
+ 001012 4780 C0F0            01028   311          BE    ENDO2               BRAN
+ 001016 D21F 3000 7000 00000 00000   312          MVC   0(32,R3),0(R7)      MOVE
+ 00101C 4177 0020            00020   313          LA    R7,32(R7)           ADVA
+ 001020 4133 0020            00020   314          LA    R3,32(R3)           ADVA
+ 001024 47F0 C0D8            01010   315          B     DO2                 BRAN
+                                     316 *
+ 001028                              317 ENDO2    DS    0H
+                                     318 *
+ 001028                              319 DO3      DS    0H
+ 001028 1925                         320          CR    R2,R5               COMP
+ 00102A 4780 C104            0103C   321          BE    ENDO3               BRAN
+ 00102E D21F 3000 2000 00000 00000   322          MVC   0(32,R3),0(R2)      MOVE
+ 001034 4122 0020            00020   323          LA    R2,32(R2)           ADVA
+ 001038 4133 0020            00020   324          LA    R3,32(R3)           ADVA
+                                     325 *
+ 00103C                              326 ENDO3    DS    0H
+ 00103C 5036 0000            00000   327          ST    R3,0(R6)            STOR
+ 001040 58DD 0004            00004   328          L     R13,4(R13)          LOAD
+ 001044 98EC D00C            0000C   329          LM    R14,R12,12(R13)     LOAD
+ 001048 07FE                         330          BR    R14                 BRAN
+                                     331          LTORG
+ 001050 E3C5E2E340404040             332 TEMP5    DC CL32'TEST'
+ 001070 E3C5E2E340404040             333 TEMP6    DC CL32'TEST'
+                                     334 ***************************************
+                                     335 *                    EQUATES
+                                     336 ***************************************
+ 000000                              337 R0     EQU 0
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 000001                              338 R1     EQU 1
+ 000002                              339 R2     EQU 2
+ 000003                              340 R3     EQU 3
+ 000004                              341 R4     EQU 4
+ 000005                              342 R5     EQU 5
+ 000006                              343 R6     EQU 6
+ 000007                              344 R7     EQU 7
+ 000008                              345 R8     EQU 8
+ 000009                              346 R9     EQU 9
+ 00000A                              347 R10    EQU 10
+ 00000B                              348 R11    EQU 11
+ 00000C                              349 R12    EQU 12
+ 00000D                              350 R13    EQU 13
+ 00000E                              351 R14    EQU 14
+ 00000F                              352 R15    EQU 15
+                                     353        END
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:   21876 HIGH:    1960 LEAVING:  469732 FREE B
+0*** ASSEMBLY TIME =    0.002 SECS,   177000 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+0BEGIN XSNAP - CALL     1 AT C000007C USER STORAGE
+0                             CORE ADDRESSES SPECIFIED-     000164 TO 0003BC
+ 000160   00000B70 E2D2C9D5 D5C5D96B 40C2C9D3    D3404040 40404040 40404040 4040
+ 000180   40404040 D1D6C8D5 E2D6D56B 40D9D6D5    40404040 40404040 40404040 4040
+ 0001A0   40404040 D1D6D5C5 E26BC2C9 D3D34040    40404040 40404040 40404040 4040
+ 0001C0   40404040 C1D5C4C5 D9E2D6D5 6B40E2C1    D3D3E840 40404040 40404040 4040
+ 0001E0   40404040 D4E4D9C4 D6C3D26B 40D3C1D5    C3C54040 40404040 40404040 4040
+ 000200   40404040 C2C1E3C8 D4C1D56B 40D7C5E3    C5D94040 40404040 40404040 4040
+ 000220   40404040 E2C8C5D9 D4C1D56B 40C2D6C2    C2E84040 40404040 40404040 4040
+ 000240   40404040 E9C5D3D4 D66B40D2 C1D9C5D5    40404040 40404040 40404040 4040
+ 000260   40404040 C2C1C9D3 C5E86BD4 C1D9E840    40404040 40404040 40404040 4040
+ 000280   40404040 D3C1C3D2 C5E86B40 D1D6C8D5    40404040 40404040 40404040 4040
+ 0002A0   40404040 C5D5E3D9 E840E3F1 40404040    40404040 40404040 40404040 4040
+   LINES    0002C0-0003A0    SAME AS ABOVE
+0
+ PRINTING TABLE NAMES PER LINE 2
+ ANDERSON, SALLY                 BAILEY,MARY
+ BATHMAN, PETER                  JOHNSON, RON
+ JONES,BILL                      LACKEY, JOHN
+ MURDOCK, LANCE                  SHERMAN, BOBBY
+ SKINNER, BILL                   ZELMO, KAREN
+0BEGIN XSNAP - CALL     2 AT C00000AE USER STORAGE
+0                             CORE ADDRESSES SPECIFIED-     0003E4 TO 00063C
+ 0003E0   40404040 C2D6E4E5 C9C5D96B 40D7C1E3    E3E84040 40404040 40404040 4040
+ 000400   40404040 E2C8D6D9 E3E26B40 D1C9D440    40404040 40404040 40404040 4040
+ 000420   40404040 C2C1E3C8 6B40C1D5 C9E3C140    40404040 40404040 40404040 4040
+ 000440   40404040 C6D3C1D5 C4C5D9E2 6B40D5C5    C4404040 40404040 40404040 4040
+ 000460   40404040 E2C9D4D7 E2D6D56B 40C8D6D4    C5D940D1 4B404040 40404040 4040
+ 000480   40404040 E3C5D9E6 C9D3D3C9 C7C5D96B    40C2D6C2 40404040 40404040 4040
+ 0004A0   40404040 D1C5D5D2 C9D5E26B 40C6C5D9    C7C9C540 40404040 40404040 4040
+ 0004C0   40404040 C2C1D5D2 E26B40C5 D9D5C9C5    40404040 40404040 40404040 4040
+10004E0   40404040 E2C1D5C4 C2C5D9C7 6B40D9E8    D5C54040 40404040 40404040 4040
+ 000500   40404040 C4C1E5C9 E26B40D1 D6C4E840    40404040 40404040 40404040 4040
+ 000520   40404040 D9C9C3C8 C1D9C4E2 6B40D4C1    D9E84040 40404040 40404040 4040
+ 000540   40404040 D4E4D9C4 D6C3D26B 40D3C1D5    C3C54040 40404040 40404040 4040
+ 000560   40404040 D9C9C3C8 C1D9C4E2 6B40E2C1    D5C4D9C1 40404040 40404040 4040
+ 000580   40404040 C5D5E3D9 E840E3F2 40404040    40404040 40404040 40404040 4040
+   LINES    0005A0-000620    SAME AS ABOVE
+0
+ PRINTING TABLE NAMES PER LINE 3
+ BANKS, ERNIE                    BATH, ANITA                     BOUVIER, PATTY
+ DAVIS, JODY                     FLANDERS, NED                   JENKINS, FERGIE
+ MURDOCK, LANCE                  RICHARDS, MARY                  RICHARDS, SANDR
+ SANDBERG, RYNE                  SHORTS, JIM                     SIMPSON, HOMER
+ TERWILLIGER, BOB
+ PRINTING TABLE NAMES PER LINE 3
+ ANDERSON, SALLY                 BAILEY,MARY                     BANKS, ERNIE
+ BATH, ANITA                     BATHMAN, PETER                  BOUVIER, PATTY
+ DAVIS, JODY                     FLANDERS, NED                   JENKINS, FERGIE
+ JOHNSON, RON                    JONES,BILL                      LACKEY, JOHN
+ MURDOCK, LANCE                  RICHARDS, MARY                  RICHARDS, SANDR
+ SANDBERG, RYNE                  SHERMAN, BOBBY                  SHORTS, JIM
+ SIMPSON, HOMER J.               SKINNER, BILL                   TERWILLIGER, BO
+ ZELMO, KAREN
+0*** EXECUTION TIME =    0.001 SECS.      2524 INSTRUCTIONS EXECUTED -  2524000
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

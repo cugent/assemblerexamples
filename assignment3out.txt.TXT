@@ -1,0 +1,164 @@
+1                    J E S 2  J O B  L O G  --  S Y S T E M  S 0 W 1  --  N O D
+0
+ 14.38.44 JOB08231 ---- MONDAY,    19 SEP 2016 ----
+ 14.38.44 JOB08231  IRR010I  USERID KC03R0F  IS ASSIGNED TO THIS JOB.
+ 14.38.44 JOB08231  ICH70001I KC03R0F  LAST ACCESS AT 14:36:56 ON MONDAY, SEPTEM
+ 14.38.44 JOB08231  $HASP373 KC03R0FA STARTED - INIT 2    - CLASS A        - SYS
+ 14.38.44 JOB08231  -                                         --TIMINGS (MINS.)-
+ 14.38.44 JOB08231  -JOBNAME  STEPNAME PROCSTEP    RC   EXCP    TCB    SRB  CLOC
+ 14.38.44 JOB08231  -KC03R0FA                      00     45 ******    .00     .
+ 14.38.44 JOB08231  -KC03R0FA ENDED.  NAME-CALEB UGENT          TOTAL TCB CPU TI
+ 14.38.44 JOB08231  $HASP395 KC03R0FA ENDED
+0------ JES2 JOB STATISTICS ------
+-  19 SEP 2016 JOB EXECUTION DATE
+-          107 CARDS READ
+-          164 SYSOUT PRINT RECORDS
+-            0 SYSOUT PUNCH RECORDS
+-           15 SYSOUT SPOOL KBYTES
+-         0.00 MINUTES EXECUTION TIME
+         1 //KC03R0FA JOB ,'CALEB UGENT',MSGCLASS=H
+         2 //STEP1 EXEC PGM=ASSIST,PARM='MACRO=F'
+         3 //STEPLIB DD DSN=KC02293.ASSIST.LOADLIB,DISP=SHR
+         4 //SYSIN DD *
+         5 //FT05F001 DD *
+         6 //SYSPRINT DD SYSOUT=*
+ ICH70001I KC03R0F  LAST ACCESS AT 14:36:56 ON MONDAY, SEPTEMBER 19, 2016
+ IEF236I ALLOC. FOR KC03R0FA STEP1
+ IGD103I SMS ALLOCATED TO DDNAME STEPLIB
+ IEF237I JES2 ALLOCATED TO SYSIN
+ IEF237I JES2 ALLOCATED TO FT05F001
+ IEF237I JES2 ALLOCATED TO SYSPRINT
+ IEF142I KC03R0FA STEP1 - STEP WAS EXECUTED - COND CODE 0000
+ IGD104I KC02293.ASSIST.LOADLIB                       RETAINED,  DDNAME=STEPLIB
+ IEF285I   KC03R0F.KC03R0FA.JOB08231.D0000101.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB08231.D0000102.?         SYSIN
+ IEF285I   KC03R0F.KC03R0FA.JOB08231.D0000103.?         SYSOUT
+ IEF373I STEP/STEP1   /START 2016263.1438
+ IEF032I STEP/STEP1   /STOP  2016263.1438
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+         VIRT:   584K  SYS:   268K  EXT:        0K  SYS:    11632K
+         ATB- REAL:                     0K  SLOTS:                     0K
+              VIRT- ALLOC:       0M SHRD:       0M
+ IEF375I  JOB/KC03R0FA/START 2016263.1438
+ IEF033I  JOB/KC03R0FA/STOP  2016263.1438
+         CPU:     0 HR  00 MIN  00.01 SEC    SRB:     0 HR  00 MIN  00.00 SEC
+1*** ASSIST 4.0/A2-05/15/82  470/V7A/0:OS/VS2  INS=SDFP7/X=BGHO, CHECK/TRC/=1180
+0MACRO=F
+0
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+                                       1 ***************************************
+                                       2 *PROGRAMMER: CALEB UGENT
+                                       3 *DATE 9/11/2016
+                                       4 *REGISTERS:
+                                       5 *R15 BASE R14 END R7 TOTAL RENT R10 COU
+                                       6 *R1 XDECI ADDRESS, R3 FIRST LINE READ,
+                                       7 * LINE READ
+                                       8 ***************************************
+ 000000                                9 MAIN     CSECT
+ 000000                               10          USING MAIN,R15
+                                      11 *
+ 000000 1BAA                          12          SR R10,R10            ZERO OUT
+ 000002 1B77                          13          SR R7,R7              ZERO OUT
+ 000004 E020 F188 0001 00188          14          XPRNT PEMPTY,1        PRINT OU
+ 00000A E020 F078 001A 00078          15          XPRNT HEADING,26      PRINT OU
+ 000010 E020 F188 0001 00188          16          XPRNT PEMPTY,1        PRINT OU
+ 000016 E020 F092 002B 00092          17          XPRNT HEADING2,43     PRINT OU
+ 00001C E000 F0BD 0050 000BD          18 TOP      XREAD CARD,80         READ IN
+ 000022 4740 F04C            0004C    19          BC B'0100',EXIT       BRANCH T
+ 000026 5330 F0BD            000BD    20          XDECI R3,CARD         READ IN
+ 00002A 5351 0000            00000    21          XDECI R5,0(R1)        READ IN
+ 00002E 5230 F10E            0010E    22          XDECO R3,MONTHS       R3 INTO
+ 000032 5250 F11A            0011A    23          XDECO R5,AMOUNT       R5 INTO
+ 000036 1C25                          24          MR    R2,R5           MULTIPLY
+ 000038 5230 F126            00126    25          XDECO R3,TOTAL        R7 INTO
+ 00003C 1A73                          26          AR    R7,R3           ADD REGI
+ 00003E E020 F10D 0025 0010D          27          XPRNT PLINE,37        PRINT OU
+ 000044 5AA0 F190            00190    28          A     R10,=F'1'       ADD TO C
+ 000048 47F0 F01C            0001C    29          B     TOP             GO TO TO
+ 00004C                               30 EXIT     DS    0H              BRANCH 1
+ 00004C E020 F188 0001 00188          31          XPRNT PEMPTY,1        PRINT OU
+ 000052 52A0 F142            00142    32          XDECO R10,TENANTS     STORE TE
+ 000056 5270 F15F            0015F    33          XDECO R7,RENT         STORE TO
+ 00005A 5C60 F190            00190    34          M     R6,=F'1'        ZERO OUT
+ 00005E 1D6A                          35          DR    R6,R10          DIVIDE R
+ 000060 5270 F17C            0017C    36          XDECO R7,AVERAGE      STORE AV
+ 000064 E020 F132 001C 00132          37          XPRNT PLINE2,28       PRINT OU
+ 00006A E020 F14E 001D 0014E          38          XPRNT PLINE3,29       PRINT OU
+ 000070 E020 F16B 001D 0016B          39          XPRNT PLINE4,29       PRINT OU
+ 000076 07FE                          40          BR    R14
+                                      41 ***************************************
+                                      42 *                    VARIABLES
+                                      43 ***************************************
+ 000078 40                            44 HEADING  DC CL1' '
+ 000079 4040404040404040              45          DC CL25'              RENT REP
+ 000092 40                            46 HEADING2 DC CL1' '
+ 000093 40404040D4D6D5E3              47          DC CL18'    MONTHS OVERDUE'
+ 0000A5 404040C1D4D6E4D5              48          DC CL11'   AMOUNT'
+ 0000B0 404040E3D6E3C1D3              49          DC CL13'   TOTAL DUE'
+ 0000BD C3C1D9C4C3C1D9C4              50 CARD     DC 20CL4'CARD'
+ 00010D 40                            51 PLINE    DC CL1' '
+ 00010E E3C5E2E340404040              52 MONTHS   DC CL12'TEST'
+1
+0  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT
+ 00011A E3C5E2E340404040              53 AMOUNT   DC CL12'TEST'
+ 000126 E3C5E2E340404040              54 TOTAL    DC CL12'TEST'
+ 000132 40                            55 PLINE2   DC CL1' '
+ 000133 E3D6E3C1D340E3C5              56          DC CL15'TOTAL TENANTS  '
+ 000142 E3C5E2E340404040              57 TENANTS  DC CL12'TEST'
+ 00014E 40                            58 PLINE3   DC CL1' '
+ 00014F E3D6E3C1D340D9C5              59          DC CL16'TOTAL RENT DUE  '
+ 00015F E3C5E2E340404040              60 RENT     DC CL12'TEST'
+ 00016B 40                            61 PLINE4   DC CL1' '
+ 00016C C1E5C5D9C1C7C540              62          DC CL16'AVERAGE RENT DUE'
+ 00017C E3C5E2E340404040              63 AVERAGE  DC CL12'TEST'
+ 000188 40                            64 PEMPTY   DC CL1' '
+                                      65 ***************************************
+                                      66 *                    EQUATES
+                                      67 ***************************************
+ 000000                               68 R0     EQU 0
+ 000001                               69 R1     EQU 1
+ 000002                               70 R2     EQU 2
+ 000003                               71 R3     EQU 3
+ 000004                               72 R4     EQU 4
+ 000005                               73 R5     EQU 5
+ 000006                               74 R6     EQU 6
+ 000007                               75 R7     EQU 7
+ 000008                               76 R8     EQU 8
+ 000009                               77 R9     EQU 9
+ 00000A                               78 R10    EQU 10
+ 00000B                               79 R11    EQU 11
+ 00000C                               80 R12    EQU 12
+ 00000D                               81 R13    EQU 13
+ 00000E                               82 R14    EQU 14
+ 00000F                               83 R15    EQU 15
+                                      84        END
+ 000190 00000001                      85                =F'1'
+0***  NO   STATEMENTS FLAGGED -  NO   WARNINGS,  NO   ERRORS
+0*** DYNAMIC CORE AREA USED:  LOW:    5756 HIGH:     900 LEAVING:  486912 FREE B
+0*** ASSEMBLY TIME =    0.000 SECS,    86000 STATEMENTS/SEC ***
+0*** PROGRAM EXECUTION BEGINNING - ANY OUTPUT BEFORE EXECUTION TIME MESSAGE IS P
+
+               RENT REPORT
+
+     MONTHS OVERDUE   AMOUNT     TOTAL DUE
+            7         500        3500
+            4         200         800
+            7        1182        8274
+            1         350         350
+            5         200        1000
+            8         131        1048
+            2         504        1008
+            5        1300        6500
+            9         142        1278
+            2         500        1000
+            1         419         419
+           10        1526       15260
+           12         160        1920
+            9        1571       14139
+            4         250        1000
+1
+ TOTAL TENANTS            15
+ TOTAL RENT DUE         57496
+ AVERAGE RENT DUE        3833
+0*** EXECUTION TIME =    0.001 SECS.       198 INSTRUCTIONS EXECUTED -   198000
+0*** AM004 - NORMAL USER TERMINATION BY RETURN ***

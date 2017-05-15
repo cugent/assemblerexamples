@@ -1,0 +1,39 @@
+1. 00C
+
+
+2. 01
+
+
+3. 2 BYTE
+
+
+4. 00A
+
+
+5. 0001 Operation Error
+
+
+6. You are trying to create a halfword in the middle of the program
+
+
+7. 00000060
+
+
+8. 022
+
+
+9. F0
+
+
+10. 07FE
+
+
+11. 024
+
+
+12. B,E,C,G
+	
+	
+	
+    
+
